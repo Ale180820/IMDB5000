@@ -1,47 +1,67 @@
 package com.url.dreamTeam;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        movieRating();
+    }
+    public static void searchMovie(){
+
+    }
+    public static void movieRating(){
+        while (true){
+            System.out.println("╔═════════════════════════════════════════════════════════╗");
+            System.out.println("║═════════════════Valoración de Películas═════════════════║");
+            System.out.println("║                                                         ║");
+            System.out.println("║                   1. Buscar película                    ║");
+            System.out.println("║             2. Mostrar top 10 de películas              ║");
+            System.out.println("║                       3. Volver                         ║");
+            System.out.println("║                                                         ║");
+            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            System.out.print("  Seleccione una opción:  ");
+            Scanner in = new Scanner(System.in);
+            String option = in.nextLine();
+
+            //Options in menu
+            switch (option){
+                case "1":
+                    System.out.println("Opción1");
+                    break;
+                case "2":
+                    System.out.println("Opción2");
+                    break;
+                case "3":
+                    System.out.println("Opción3");
+                    break;
+                default:
+                    System.out.print("Opción incorrecta, intentelo nuevamente.");
+                    Scanner error = new Scanner(System.in);
+                    in.nextLine();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    break;
+            }
+        }
     }
 
-    public void movieRating(){
-        System.out.println("");
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://127.0.0.1:5000/countries");
-        try {
-            HttpResponse httpresponse = httpclient.execute(httpget);
-            var entity = httpresponse.getEntity();
-            StringBuilder builder = new StringBuilder();
+    public static void search(){
 
-            if (entity != null) {
-                InputStream inputStream = entity.getContent();
-                var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                for (String line = null; (line = bufferedReader.readLine()) != null;) {
-                    builder.append(line).append("\n");
-                }
-                //Exception getting thrown in below line
-                JSONArray jsonArray = new JSONArray(builder.toString());
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    System.out.println(jsonObject);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
+    public static void topMovies(){
+
     }
 }
