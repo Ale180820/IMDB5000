@@ -13,8 +13,73 @@ import java.io.UnsupportedEncodingException;
 public class Main {
 
     public static void main(String[] args) {
+        printLogin();
         movieRating();
     }
+    public static boolean printLogin(){
+
+        boolean result = false;
+        
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║          USERNAME:                                      ║");
+        System.out.println("║          PASSWORD:                                      ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║            > presione 'x' para crear cuenta <           ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("  Escriba su username o 'x' : ");
+        Scanner inUsername = new Scanner(System.in);
+        String username = inUsername.nextLine();
+        String sUsername = "";
+
+        if (username.length() > 12){
+            clearConsole();
+            System.out.println("Username debe tener menos de 12 caracteres");
+        }else {
+            sUsername = String.format("%-12s", username);
+
+            System.out.println("╔═════════════════════════════════════════════════════════╗");
+            System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
+            System.out.println("║                                                         ║");
+            System.out.println("║          USERNAME:    "+sUsername+"                      ║");
+            System.out.println("║          PASSWORD:                                      ║");
+            System.out.println("║                                                         ║");
+            System.out.println("║            > presione 'x' para crear cuenta <           ║");
+            System.out.println("║                                                         ║");
+            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            System.out.print("  Escriba su password : ");
+            Scanner inPassword = new Scanner(System.in);
+            String password = inPassword.nextLine();
+            String cPassword = "";
+            
+            if(password.length() > 12){
+                clearConsole();
+                System.out.println("Password debe tener menos de 12 caracteres");
+            }else {
+                result = true;
+                for (var item : password.toCharArray()) {
+                    cPassword += "*";
+                }
+
+                cPassword = String.format("%-12s", cPassword);
+
+                System.out.println("╔═════════════════════════════════════════════════════════╗");
+                System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
+                System.out.println("║                                                         ║");
+                System.out.println("║          USERNAME:    "+sUsername+"                      ║");
+                System.out.println("║          PASSWORD:    "+cPassword+"                      ║");
+                System.out.println("║                                                         ║");
+                System.out.println("║            > presione 'x' para crear cuenta <           ║");
+                System.out.println("║                                                         ║");
+                System.out.println("╚═════════════════════════════════════════════════════════╝");
+            }
+        }
+
+        return result;
+    }
+
     public static void movieRating(){
         while (true){
             System.out.println("╔═════════════════════════════════════════════════════════╗");
@@ -112,5 +177,26 @@ public class Main {
         }
 
         return json.toString();
+    }
+
+    public final static void clearConsole()
+    {
+        try
+        {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows"))
+            {
+                Runtime.getRuntime().exec("cls");
+            }
+            else
+            {
+                Runtime.getRuntime().exec("clear");
+            }
+        }
+        catch (final Exception e)
+        {
+            //  Handle any exceptions.
+        }
     }
 }
