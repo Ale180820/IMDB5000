@@ -1,14 +1,17 @@
 package com.url.dreamTeam;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.*;
 import java.util.Scanner;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class Main {
 
@@ -90,17 +93,17 @@ public class Main {
             System.out.println("║                       3. Volver                         ║");
             System.out.println("║                                                         ║");
             System.out.println("╚═════════════════════════════════════════════════════════╝");
-            System.out.print("  Seleccione una opción:  ");
+            System.out.print("Seleccione una opción:  ");
             Scanner in = new Scanner(System.in);
             String option = in.nextLine();
 
             //Options in menu
             switch (option){
                 case "1":
-                    System.out.println("Opción1");
+                    search();
                     break;
                 case "2":
-                    System.out.println("Opción2");
+                    topMovies();
                     break;
                 case "3":
                     System.out.println("Opción3");
@@ -117,10 +120,105 @@ public class Main {
     }
 
     public static void search(){
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═════════════════════Buscar películas════════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║             Valora una película realizando              ║");
+        System.out.println("║                  una búsqueda de esta.                  ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("Ingresa título de la película:  ");
+        Scanner searchWord = new Scanner(System.in);
+        String word = searchWord.nextLine();
+
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═════════════════════Buscar películas════════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                 Resultado de la búsqueda                ║");
+        System.out.println("║                         *****                           ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║           Ingresa la valoración de la película          ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("Ingresa tu valoración entre 1 y 10:  ");
+        Scanner value = new Scanner(System.in);
+        String rating = searchWord.nextLine();
+
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═════════════════════Buscar películas════════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                ¡Tu valoración se ha guardado            ║");
+        System.out.println("║                        exitosamente!                    ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
 
     }
     public static void topMovies() {
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║════════════════════Top 10 de películas══════════════════║");
+        System.out.println("║           1.                                            ║");
+        System.out.println("║           2.                                            ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("Ingresa la película que deseas valorar [1-10]:  ");
+        Scanner option = new Scanner(System.in);
+        String movie = option.nextLine();
+
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║════════════════════Top 10 de películas══════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                         Película                        ║");
+        System.out.println("║                          *****                          ║");
+        System.out.println("║                                                         ║");
+        System.out.println("║           Ingresa la valoración de la película          ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("Ingresa tu valoración entre 1 y 10:  ");
+        Scanner value = new Scanner(System.in);
+        String rating = value.nextLine();
+
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═════════════════════Buscar películas════════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║                ¡Tu valoración se ha guardado            ║");
+        System.out.println("║                        exitosamente!                    ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
     }
+
+    //GET - Rating
+    public void getMovieSearch(){
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpget = new HttpGet("http://127.0.0.1:5000/countries");
+        try {
+            HttpResponse httpresponse = httpclient.execute(httpget);
+            var entity = httpresponse.getEntity();
+            StringBuilder builder = new StringBuilder();
+
+            if (entity != null) {
+                InputStream inputStream = entity.getContent();
+                var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                for (String line = null; (line = bufferedReader.readLine()) != null;) {
+                    builder.append(line).append("\n");
+                }
+                //Exception getting thrown in below line
+                JSONArray jsonArray = new JSONArray(builder.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    System.out.println(jsonObject);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //POST - Rating
+
     public static String loginCreate (String username, String password, boolean create){
 
         CloseableHttpClient client = HttpClients.createDefault();
