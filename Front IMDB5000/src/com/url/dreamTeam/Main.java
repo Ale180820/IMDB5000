@@ -16,13 +16,30 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        printLogin();
-        movieRating();
+        int loginRes = printLogin();
+        switch (loginRes) {
+            case 1:
+                // crear usuario
+                System.out.println("CREAR USUARIO");
+                break;
+            case 2:
+                // caso login valido
+                System.out.println("LOGIN CORRECTO");
+                movieRating();
+                break;
+            case 3:
+                // caso login invalido
+                System.out.println("LOGIN INCORRECTO");
+                break;
+            case 4:
+                // caso de error
+                System.out.println("ERROR");
+                break;
+        }
     }
-    public static boolean printLogin(){
+    public static int printLogin(){
 
-        boolean result = false;
-        
+        int result = 0;
         System.out.println("╔═════════════════════════════════════════════════════════╗");
         System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
         System.out.println("║                                                         ║");
@@ -40,7 +57,12 @@ public class Main {
         if (username.length() > 12){
             clearConsole();
             System.out.println("Username debe tener menos de 12 caracteres");
-        }else {
+            result = 4;
+        }else if (username.equals("x")){
+            // se va a crear usuario
+            result = 1;
+        }
+        else {
             sUsername = String.format("%-12s", username);
 
             System.out.println("╔═════════════════════════════════════════════════════════╗");
@@ -49,7 +71,7 @@ public class Main {
             System.out.println("║          USERNAME:    "+sUsername+"                      ║");
             System.out.println("║          PASSWORD:                                      ║");
             System.out.println("║                                                         ║");
-            System.out.println("║            > presione 'x' para crear cuenta <           ║");
+            System.out.println("║                                                         ║");
             System.out.println("║                                                         ║");
             System.out.println("╚═════════════════════════════════════════════════════════╝");
             System.out.print("  Escriba su password : ");
@@ -60,8 +82,9 @@ public class Main {
             if(password.length() > 12){
                 clearConsole();
                 System.out.println("Password debe tener menos de 12 caracteres");
+                result = 4;
             }else {
-                result = true;
+                result = 2;
                 for (var item : password.toCharArray()) {
                     cPassword += "*";
                 }
@@ -74,9 +97,11 @@ public class Main {
                 System.out.println("║          USERNAME:    "+sUsername+"                      ║");
                 System.out.println("║          PASSWORD:    "+cPassword+"                      ║");
                 System.out.println("║                                                         ║");
-                System.out.println("║            > presione 'x' para crear cuenta <           ║");
+                System.out.println("║                                                         ║");
                 System.out.println("║                                                         ║");
                 System.out.println("╚═════════════════════════════════════════════════════════╝");
+
+                // Validacion login y si es correcta la contrase;a y username regresa 2, sino regresa 3
             }
         }
 
