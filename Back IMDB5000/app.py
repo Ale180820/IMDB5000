@@ -1,6 +1,7 @@
 # app.py
 from flask import Flask, request, jsonify
 from firebase import firebase
+import imdb_recommender as recommender
 
 app = Flask(__name__)
 firebase = firebase.FirebaseApplication(
@@ -37,7 +38,7 @@ def check_if_user_exists(users, username):
 
 
 @app.post("/register")
-def add_movies():
+def register_user():
     if request.is_json:
         user = request.get_json()
         if user["username"] != None and user["password"] != None:
@@ -52,7 +53,7 @@ def add_movies():
 
 
 @app.post("/login")
-def add_movies():
+def login():
     if request.is_json:
         user = request.get_json()
         if user["username"] != None and user["password"] != None:
@@ -72,6 +73,22 @@ def add_movies():
         movies = movies["movies"]
         firebase.put('/', 'Movies', movies)
         return 201
+    return {"error": "Request must be JSON"}, 415
+
+
+@app.get("/recommend")
+def recommend():
+    return jsonify(recommender.recommend([], []))
+
+
+@app.post("/movies/search")
+def search_movies():
+    if request.is_json:
+        query = request.get_json()
+        value, category = query["value"], query["category"]
+        movies = firebase.get('/Movies')
+        movies = list(filter(lambda m: m[category] == value, movies))
+        return jsonify(movies)
     return {"error": "Request must be JSON"}, 415
 
 
