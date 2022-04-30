@@ -10,10 +10,6 @@ firebase = firebase.FirebaseApplication(
 
 fernet = Fernet(b'zQg_8z-Jj1dv1Zk-DZRXn8W7tZFvS0l7y-fF8-f-zJg=')
 
-# def _find_next_id():
-#     return max(country["id"] for country in countries) + 1
-
-
 # @app.get("/countries")
 # def get_countries():
 #     firebase.put('/', "Usuarios", "Eduarso biyeda (:")
