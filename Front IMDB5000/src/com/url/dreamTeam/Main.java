@@ -11,11 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
+
         int loginRes = printLogin();
         switch (loginRes) {
             case 1:
@@ -356,6 +357,174 @@ public class Main {
         }
 
         return json.toString();
+    }
+
+    public static List<String> getCategories(){
+        //obtener las categorias
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpget = new HttpGet("http://127.0.0.1:5000/categories");
+        List<String> categories = new ArrayList<String>();
+        try {
+            HttpResponse httpresponse = httpclient.execute(httpget);
+            var entity = httpresponse.getEntity();
+            StringBuilder builder = new StringBuilder();
+
+            if (entity != null) {
+                InputStream inputStream = entity.getContent();
+                var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                for (String line = null; (line = bufferedReader.readLine()) != null;) {
+                    builder.append(line).append("\n");
+                }
+                //Exception getting thrown in below line
+                JSONArray jsonArray = new JSONArray(builder.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    String jsonstring = jsonArray.getString(i);
+                    categories.add(jsonstring);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return categories;
+    }
+
+    public static List<String> showCategories(){
+//        List<String> categories = getCategories();
+        List<String> categories = Arrays.asList("Miedo", "Sci-Fi", "three");
+        System.out.println("Categorias");
+        var num = 1;
+
+        for( var category: categories){
+            System.out.print(num + "."+ category + "   ");
+            num++;
+        }
+        System.out.println();
+
+
+        return categories;
+    }
+
+    public static void selectFavCategories(List<String> categories)  {
+        boolean isValid=false;
+
+            System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
+            System.out.println("║  Ingresa el índice de tus categorias favoritas separadas por comas  ║");
+            System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
+            System.out.println("Ingresa X para regresar");
+            Scanner in = new Scanner(System.in);
+            String options = in.nextLine();
+            options = options.toLowerCase();
+
+            if(!options.contains("x")){
+                String[] selectedCategoriesIndex = options.split(",");
+                //Eliminar numeros duplicados
+                LinkedHashSet linkedHashSet = new LinkedHashSet<String>(List.of(selectedCategoriesIndex));
+                //Get back the array without duplicates
+                selectedCategoriesIndex = (String[]) linkedHashSet.toArray(new String[] {});
+                isValid = isValidCategories(selectedCategoriesIndex,categories.size());
+
+                if(isValid){
+                    List<String> selectedCategories = new ArrayList<String>();
+                    for (String categoryIndex : selectedCategoriesIndex){
+
+                                var cat = categories.get(Integer.valueOf(categoryIndex)-1);
+                                System.out.println(cat);
+                                selectedCategories.add(cat);
+                    }
+
+                    setFavCategories( selectedCategories);
+                }
+
+            }else if(options.equals("")){
+
+            }
+
+
+
+    }
+
+    public static boolean isValidCategories(String[] categories, int maxValue ){
+
+            try {
+                for(var category: categories) {
+                    System.out.println(category);
+                    if (Integer.valueOf(category) > maxValue || Integer.valueOf(category) < 1) {
+                        // chequear que no hayan numeros que no existan en las categorias
+                        System.out.println("Ingresa categorias validas");
+                        return false;
+                    }
+                }
+            }catch (NumberFormatException ne){
+                System.out.println("Ingresa los indices de las categorias");
+                return false;
+            }
+
+
+        return true;
+    }
+
+    public static void setFavCategories(List<String> categories){
+
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/categories");
+        JSONObject json = new JSONObject();
+        json.put("FavCategories", categories);
+        json.put("username", "Eduarso");
+        System.out.print(json);
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json.toString());
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            CloseableHttpResponse response = client.execute(httpPost);
+            client.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void setUserRecommendation(){
+        //mandar el usuario, para que en la api se busque si el usuario tiene generos fav
+        //y devolver un array de 10 peliculas
+    }
+
+    private static void setRecommendation(String user){
+        //setear los gustos
+
+//        CloseableHttpClient client = HttpClients.createDefault();
+//        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/countries");
+//        JSONObject json = new JSONObject();
+//        //String json = "{\"area\":1,\"name\":\"John\",\"capital\":\"Mayer\"}";
+//        json.put("usuario", user);
+//        json.put("area", 1);
+//        json.put("name","Estuardo");
+//        json.put("capital","Guate");
+//        System.out.print(json);
+//        StringEntity entity = null;
+//        try {
+//            entity = new StringEntity(json.toString());
+//            httpPost.setEntity(entity);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            CloseableHttpResponse response = client.execute(httpPost);
+//            client.close();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        } catch (ClientProtocolException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
 
     public final static void clearConsole()

@@ -1,30 +1,141 @@
 # app.py
 from flask import Flask, request, jsonify
+from firebase import firebase
+import imdb_recommender as recommender
 
 app = Flask(__name__)
+firebase = firebase.FirebaseApplication(
+    "https://proyecto-ia-ba83a-default-rtdb.firebaseio.com", None)
 
-countries = [
-    {"id": 1, "name": "Thailand", "capital": "Bangkok", "area": 513120},
-    {"id": 2, "name": "Australia", "capital": "Canberra", "area": 7617930},
-    {"id": 3, "name": "Egypt", "capital": "Cairo", "area": 1010408},
-]
-
-
-def _find_next_id():
-    return max(country["id"] for country in countries) + 1
+# countries = [
+#     {"id": 1, "name": "Thailand", "capital": "Bangkok", "area": 513120},
+#     {"id": 2, "name": "Australia", "capital": "Canberra", "area": 7617930},
+#     {"id": 3, "name": "Egypt", "capital": "Cairo", "area": 1010408},
+# ]
 
 
-@app.get("/countries")
-def get_countries():
-    return jsonify(countries)
+# def _find_next_id():
+#     return max(country["id"] for country in countries) + 1
 
 
-@app.post("/countries")
-def add_country():
-    print(request)
+# @app.get("/countries")
+# def get_countries():
+#     firebase.put('/', "Usuarios", "Eduarso biyeda (:")
+#     return jsonify(countries)
+
+
+# @app.post("/countries")
+# def add_country():
+#     if request.is_json:
+#         country = request.get_json()
+#         country["id"] = _find_next_id()
+#         countries.append(country)
+#         return country, 201
+#     return {"error": "Request must be JSON"}, 415
+
+def check_if_user_exists(users, username):
+    if users == None:
+        return False
+    return users[username] != None
+
+
+@app.post("/register")
+def register_user():
     if request.is_json:
-        country = request.get_json()
-        country["id"] = _find_next_id()
-        countries.append(country)
-        return country, 201
+        user = request.get_json()
+        if user["username"] != None and user["password"] != None:
+            users = firebase.get('/Users', '')
+            if not check_if_user_exists(users, user["username"]):
+                users[user.username] = user.password
+                firebase.put('/', 'Users', users)
+                return 201
+            return 403
+        return 500
+    return {"error": "Request must be JSON"}, 415
+
+
+@app.post("/login")
+def login():
+    if request.is_json:
+        user = request.get_json()
+        if user["username"] != None and user["password"] != None:
+            users = firebase.get('/Users', '')
+            if check_if_user_exists(users, user["username"]):
+                if user["password"] == users[user["username"]].password:
+                    return 200
+            return 403
+        return 500
+    return {"error": "Request must be JSON"}, 415
+
+
+@app.post("/movies")
+def add_movies():
+    if request.is_json:
+        movies = request.get_json()
+        movies = movies["movies"]
+        firebase.put('/', 'Movies', movies)
+        return 201
+    return {"error": "Request must be JSON"}, 415
+
+
+@app.get("/recommend")
+def recommend():
+    return jsonify(recommender.recommend([], []))
+
+
+@app.post("/movies/search")
+def search_movies():
+    if request.is_json:
+        query = request.get_json()
+        value, category = query["value"], query["category"]
+        movies = firebase.get('/Movies')
+        movies = list(filter(lambda m: m[category] == value, movies))
+        return jsonify(movies)
+    return {"error": "Request must be JSON"}, 415
+
+
+def get_db_categories():
+    movies = firebase.get('/Movies')
+    categories = []
+    for movie in movies:
+        for category in movie.categories:
+            if category not in categories:
+                categories.append(category)
+    return categories
+
+
+@app.get("/categories")
+def get_categories():
+    return jsonify(get_db_categories())
+
+@app.post("/categories")
+def set_fav_categories():
+    if request.is_json:
+        req = request.get_json()
+        categories, username = req["FavCategories"], req["username"]
+        users = firebase.get('/Users', '')
+        if check_if_user_exists(users, username):
+            prevCategories = list(users[username]["FavCategories"])
+            prevCategories = list(filter(lambda c: c != None, prevCategories))
+            for category in categories:
+                if category not in prevCategories:
+                    prevCategories.append(category)
+            users[username]["FavCategories"] = prevCategories
+            firebase.put('/', 'Users', users)
+            return jsonify(users[username]["FavCategories"]), 201
+        return {"error": "You don't have acces, srry ):"}, 403
+    return {"error": "Request must be JSON"}, 415
+
+
+@app.post("/movies/grading")
+def grading_movie():
+    if request.is_json:
+        req = request.get_json()
+        username, movie, grade = req["username"], req["movie"], req["grade"]
+        users = firebase.get('/Users', '')
+        if check_if_user_exists(users, username):
+            movies = users[username]["movies"]
+            movies[movie] = grade
+            firebase.put('/', 'Users', users)
+        return 201
     return {"error": "Request must be JSON"}, 415
