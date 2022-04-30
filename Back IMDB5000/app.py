@@ -34,6 +34,8 @@ firebase = firebase.FirebaseApplication(
 #     return {"error": "Request must be JSON"}, 415
 
 def check_if_user_exists(users, username):
+    if users == None:
+        return False
     return users[username] != None
 
 
@@ -92,15 +94,37 @@ def search_movies():
     return {"error": "Request must be JSON"}, 415
 
 
-@app.get("/categories")
-def get_categories():
+def get_db_categories():
     movies = firebase.get('/Movies')
     categories = []
     for movie in movies:
         for category in movie.categories:
             if category not in categories:
                 categories.append(category)
-    return jsonify(categories)
+    return categories
+
+
+@app.get("/categories")
+def get_categories():
+    return jsonify(get_db_categories())
+
+@app.post("/categories")
+def set_fav_categories():
+    if request.is_json:
+        req = request.get_json()
+        categories, username = req["FavCategories"], req["username"]
+        users = firebase.get('/Users', '')
+        if check_if_user_exists(users, username):
+            prevCategories = list(users[username]["FavCategories"])
+            prevCategories = list(filter(lambda c: c != None, prevCategories))
+            for category in categories:
+                if category not in prevCategories:
+                    prevCategories.append(category)
+            users[username]["FavCategories"] = prevCategories
+            firebase.put('/', 'Users', users)
+            return jsonify(users[username]["FavCategories"]), 201
+        return {"error": "You don't have acces, srry ):"}, 403
+    return {"error": "Request must be JSON"}, 415
 
 
 @app.post("/movies/grading")

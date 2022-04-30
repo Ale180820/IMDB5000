@@ -16,28 +16,27 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-       List<String> categories = showCategories();
-        selectFavCategories(categories);
-//        int loginRes = printLogin();
-//        switch (loginRes) {
-//            case 1:
-//                // crear usuario
-//                System.out.println("CREAR USUARIO");
-//                break;
-//            case 2:
-//                // caso login valido
-//                System.out.println("LOGIN CORRECTO");
-//                movieRating();
-//                break;
-//            case 3:
-//                // caso login invalido
-//                System.out.println("LOGIN INCORRECTO");
-//                break;
-//            case 4:
-//                // caso de error
-//                System.out.println("ERROR");
-//                break;
-//        }
+
+        int loginRes = printLogin();
+        switch (loginRes) {
+            case 1:
+                // crear usuario
+                System.out.println("CREAR USUARIO");
+                break;
+            case 2:
+                // caso login valido
+                System.out.println("LOGIN CORRECTO");
+                movieRating();
+                break;
+            case 3:
+                // caso login invalido
+                System.out.println("LOGIN INCORRECTO");
+                break;
+            case 4:
+                // caso de error
+                System.out.println("ERROR");
+                break;
+        }
     }
     public static int printLogin(){
 
@@ -412,50 +411,10 @@ public class Main {
     public static void setFavCategories(List<String> categories){
 
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/countries");
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/categories");
         JSONObject json = new JSONObject();
-        //String json = "{\"area\":1,\"name\":\"John\",\"capital\":\"Mayer\"}";
         json.put("FavCategories", categories);
-        //json.put("usuario", user);
-//        json.put("area", 1);
-//        json.put("name","Estuardo");
-//        json.put("capital","Guate");
-        System.out.print(json);
-        StringEntity entity = null;
-//        try {
-//            entity = new StringEntity(json.toString());
-//            httpPost.setEntity(entity);
-//            httpPost.setHeader("Accept", "application/json");
-//            httpPost.setHeader("Content-type", "application/json");
-//            CloseableHttpResponse response = client.execute(httpPost);
-//            client.close();
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        } catch (ClientProtocolException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-    }
-
-
-    public static void setUserRecommendation(){
-        //mandar el usuario, para que en la api se busque si el usuario tiene generos fav
-        //y devolver un array de 10 peliculas
-    }
-
-    private static void setRecommendation(String user){
-        //setear los gustos
-
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/countries");
-        JSONObject json = new JSONObject();
-        //String json = "{\"area\":1,\"name\":\"John\",\"capital\":\"Mayer\"}";
-        json.put("usuario", user);
-//        json.put("area", 1);
-//        json.put("name","Estuardo");
-//        json.put("capital","Guate");
+        json.put("username", "Eduarso");
         System.out.print(json);
         StringEntity entity = null;
         try {
@@ -472,6 +431,42 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+
+    public static void setUserRecommendation(){
+        //mandar el usuario, para que en la api se busque si el usuario tiene generos fav
+        //y devolver un array de 10 peliculas
+    }
+
+    private static void setRecommendation(String user){
+        //setear los gustos
+
+//        CloseableHttpClient client = HttpClients.createDefault();
+//        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/countries");
+//        JSONObject json = new JSONObject();
+//        //String json = "{\"area\":1,\"name\":\"John\",\"capital\":\"Mayer\"}";
+//        json.put("usuario", user);
+//        json.put("area", 1);
+//        json.put("name","Estuardo");
+//        json.put("capital","Guate");
+//        System.out.print(json);
+//        StringEntity entity = null;
+//        try {
+//            entity = new StringEntity(json.toString());
+//            httpPost.setEntity(entity);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            CloseableHttpResponse response = client.execute(httpPost);
+//            client.close();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        } catch (ClientProtocolException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
     }
