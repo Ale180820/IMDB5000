@@ -28,6 +28,9 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
+        initProgram();
+    }
+    public static void initProgram(){
         int loginRes = printLogin();
         switch (loginRes) {
             case 1:
@@ -38,7 +41,7 @@ public class Main {
             case 2:
                 // caso login valido
                 System.out.println("LOGIN CORRECTO");
-                movieRating();
+                menuPrincipal();
                 break;
             case 3:
                 // caso login invalido
@@ -50,6 +53,47 @@ public class Main {
                 break;
         }
     }
+    //Menu principal
+    public static void menuPrincipal(){
+        int option = 0;
+        while (option != 3){
+            System.out.println("╔═════════════════════════════════════════════════════════╗");
+            System.out.println("║══════════════════════════Menú═══════════════════════════║");
+            System.out.println("║                                                         ║");
+            System.out.println("║                   1. Calificar peliculas                ║");
+            System.out.println("║                 2. Obtener recomendaciones              ║");
+            System.out.println("║                      3. Borrar datos                    ║");
+            System.out.println("║                      4. Cerrar Sesión                   ║");
+            System.out.println("║                                                         ║");
+            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            System.out.print("Seleccione una opción:  ");
+            Scanner in = new Scanner(System.in);
+            option = Integer.parseInt(in.nextLine());
+
+            //Options in menu
+            switch (option){
+                case 1:
+                    search();
+                    break;
+                case 2:
+                    topMovies();
+                    break;
+                case 3:
+                    deleteData();
+                    break;
+                case 4:
+                    initProgram();
+                    break;
+                default:
+                    System.out.print("Opción incorrecta, intentelo nuevamente.");
+                    Scanner error = new Scanner(System.in);
+                    in.nextLine();
+                    clearConsole();
+                    break;
+            }
+        }
+    }
+
     //1. Login y creación de cuenta
     public static int printLogin(){
 
@@ -175,9 +219,9 @@ public class Main {
     }
 
     //2. Rating de películas
-    public static void movieRating(){
+    public static void movieRating() throws IOException {
         int option = 0;
-        while (option != 3){
+        while (option != 2){
             System.out.println("╔═════════════════════════════════════════════════════════╗");
             System.out.println("║═════════════════Valoración de Películas═════════════════║");
             System.out.println("║                                                         ║");
@@ -188,23 +232,12 @@ public class Main {
             System.out.print("Seleccione una opción:  ");
             Scanner in = new Scanner(System.in);
             option = Integer.parseInt(in.nextLine());
-
-            //Options in menu
-            switch (option){
-                case 1:
-                    search();
-                    break;
-                case 2:
-                    topMovies();
-                    break;
-                case 3:
-                    break;
-                default:
-                    System.out.print("Opción incorrecta, intentelo nuevamente.");
-                    Scanner error = new Scanner(System.in);
-                    in.nextLine();
-                    clearConsole();
-                    break;
+            if (option == 1){
+                search();
+            }
+            else{
+                System.out.print("Opción incorrecta, intentelo nuevamente.");
+                System.in.read();
             }
         }
     }
@@ -263,7 +296,7 @@ public class Main {
         searchWord.nextLine();
     }
 
-    //Top 10 de recomendaciones
+    //3. Recomendaciones
     public static void topMovies() {
         List<Movie> topTen = topTen();
         System.out.println("╔═════════════════════════════════════════════════════════╗");
@@ -278,6 +311,10 @@ public class Main {
         option.nextLine();
     }
 
+    //4. Borrar datos
+    public static void deleteData(){
+
+    }
     //GET y POST
 
     //POST - Search
