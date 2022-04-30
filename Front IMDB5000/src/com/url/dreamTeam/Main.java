@@ -213,6 +213,7 @@ public class Main {
                 System.out.println("╚═════════════════════════════════════════════════════════╝");
 
                 // Crear cuenta, si se creo correctamente devolver 1, sino devolver 2
+                loginCreate(sUsername.trim(),password.trim(), true);
             }
         }
         return result;
@@ -456,7 +457,7 @@ public class Main {
 
         if (create){
             // caso create account
-            httpPost = new HttpPost("http://127.0.0.1:5000/countries");
+            httpPost = new HttpPost("http://127.0.0.1:5000/register");
 
             try {
                 entity = new StringEntity(json.toString());
@@ -472,7 +473,7 @@ public class Main {
             //validaciones
         } else {
             // caso login
-            httpPost = new HttpPost("http://127.0.0.1:5000/countries");
+            httpPost = new HttpPost("http://127.0.0.1:5000/login");
 
             try {
                 entity = new StringEntity(json.toString());
@@ -683,7 +684,12 @@ public class Main {
     public static String readCSV(String path) throws FileNotFoundException {
         String result[];
 
-        Scanner scan = new Scanner(new File(path));
+        Scanner scan = null;
+        try {
+            scan = new Scanner(new File(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         // Parsing
         scan.useDelimiter(",");

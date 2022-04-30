@@ -1,18 +1,14 @@
 # app.py
 from flask import Flask, request, jsonify
 from firebase import firebase
+from cryptography.fernet import Fernet
 import imdb_recommender as recommender
 
 app = Flask(__name__)
 firebase = firebase.FirebaseApplication(
     "https://proyecto-ia-ba83a-default-rtdb.firebaseio.com", None)
 
-# countries = [
-#     {"id": 1, "name": "Thailand", "capital": "Bangkok", "area": 513120},
-#     {"id": 2, "name": "Australia", "capital": "Canberra", "area": 7617930},
-#     {"id": 3, "name": "Egypt", "capital": "Cairo", "area": 1010408},
-# ]
-
+fernet = Fernet(b'zQg_8z-Jj1dv1Zk-DZRXn8W7tZFvS0l7y-fF8-f-zJg=')
 
 # def _find_next_id():
 #     return max(country["id"] for country in countries) + 1
@@ -36,20 +32,27 @@ firebase = firebase.FirebaseApplication(
 def check_if_user_exists(users, username):
     if users == None:
         return False
-    return users[username] != None
+    return users.get(username) != None
 
 
 @app.post("/register")
 def register_user():
     if request.is_json:
-        user = request.get_json()
-        if user["username"] != None and user["password"] != None:
+        req = request.get_json()
+        username, password = req["username"], req["password"]
+        password = fernet.encrypt(password.encode())
+        password = password.decode('utf-8')
+        if username != None and password != None:
             users = firebase.get('/Users', '')
-            if not check_if_user_exists(users, user["username"]):
-                users[user.username] = user.password
+            if not check_if_user_exists(users, username):
+                if users == None:
+                    users = {}
+                users[username] = {
+                    "password": password
+                }
                 firebase.put('/', 'Users', users)
-                return 201
-            return 403
+                return jsonify(users[username]), 201
+            return {"error": "User already exists"}, 403
         return 500
     return {"error": "Request must be JSON"}, 415
 
@@ -57,14 +60,17 @@ def register_user():
 @app.post("/login")
 def login():
     if request.is_json:
-        user = request.get_json()
-        if user["username"] != None and user["password"] != None:
+        req = request.get_json()
+        username, password = req["username"], req["password"]
+        if username != None and password != None:
             users = firebase.get('/Users', '')
-            if check_if_user_exists(users, user["username"]):
-                if user["password"] == users[user["username"]].password:
-                    return 200
-            return 403
-        return 500
+            if check_if_user_exists(users, req["username"]):
+                current_pass = users[username]["password"]
+                current_pass = current_pass.encode('utf-8')
+                current_pass = fernet.decrypt(current_pass).decode()
+                if password == current_pass:
+                    return {"msg": "Welcome back, fella (:"}, 200
+        return {"error": "Wrong credentials"}, 403
     return {"error": "Request must be JSON"}, 415
 
 
@@ -108,6 +114,7 @@ def get_db_categories():
 def get_categories():
     return jsonify(get_db_categories())
 
+
 @app.post("/categories")
 def set_fav_categories():
     if request.is_json:
@@ -130,11 +137,6 @@ def set_fav_categories():
 @app.post("/movies/grading")
 def grading_movie():
     if request.is_json:
-<<<<<<< HEAD
-        country = request.get_json()
-        print(country)
-        return country, 201
-=======
         req = request.get_json()
         username, movie, grade = req["username"], req["movie"], req["grade"]
         users = firebase.get('/Users', '')
@@ -143,5 +145,4 @@ def grading_movie():
             movies[movie] = grade
             firebase.put('/', 'Users', users)
         return 201
->>>>>>> 306b604f6ddddac55d14c63d268e7e9d6dff0cc1
     return {"error": "Request must be JSON"}, 415
