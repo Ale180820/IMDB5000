@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53502b71-d9aa-46cd-9087-be701a5d4a4a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/url/dreamTeam/Movie.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Back IMDB5000/imdb_recommender.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_13_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_13_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_13_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/url/dreamTeam/Pelicula.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Pelicula.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Back IMDB5000/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Back IMDB5000/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IMDB5000.iml" beforeDir="false" afterPath="$PROJECT_DIR$/IMDB5000.iml" afterDir="false" />
