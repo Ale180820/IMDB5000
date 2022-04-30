@@ -1,11 +1,14 @@
 # app.py
 from flask import Flask, request, jsonify
 from firebase import firebase
+from cryptography.fernet import Fernet
 import imdb_recommender as recommender
 
 app = Flask(__name__)
 firebase = firebase.FirebaseApplication(
     "https://proyecto-ia-ba83a-default-rtdb.firebaseio.com", None)
+
+fernet = Fernet(b'zQg_8z-Jj1dv1Zk-DZRXn8W7tZFvS0l7y-fF8-f-zJg=')
 
 # countries = [
 #     {"id": 1, "name": "Thailand", "capital": "Bangkok", "area": 513120},
@@ -36,20 +39,26 @@ firebase = firebase.FirebaseApplication(
 def check_if_user_exists(users, username):
     if users == None:
         return False
-    return users[username] != None
+    return users.get(username) != None
 
 
 @app.post("/register")
 def register_user():
     if request.is_json:
-        user = request.get_json()
-        if user["username"] != None and user["password"] != None:
+        req = request.get_json()
+        username, password = req["username"], req["password"]
+        password = fernet.encrypt(password.encode())
+        if username != None and password != None:
             users = firebase.get('/Users', '')
-            if not check_if_user_exists(users, user["username"]):
-                users[user.username] = user.password
+            if not check_if_user_exists(users, username):
+                if users == None:
+                    users = {}
+                users[username] ={
+                    "password": password
+                } 
                 firebase.put('/', 'Users', users)
-                return 201
-            return 403
+                return jsonify(users[username]), 201
+            return {"error": "User already exists"}, 403
         return 500
     return {"error": "Request must be JSON"}, 415
 
@@ -61,7 +70,8 @@ def login():
         if user["username"] != None and user["password"] != None:
             users = firebase.get('/Users', '')
             if check_if_user_exists(users, user["username"]):
-                if user["password"] == users[user["username"]].password:
+                current_pass = fernet.decrypt(users[user["username"]].password).decode()
+                if user["password"] == current_pass:
                     return 200
             return 403
         return 500
