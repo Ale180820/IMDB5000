@@ -21,6 +21,7 @@ public class Main {
             case 1:
                 // crear usuario
                 System.out.println("CREAR USUARIO");
+                printCreateProfile();
                 break;
             case 2:
                 // caso login valido
@@ -71,8 +72,6 @@ public class Main {
             System.out.println("║          USERNAME:    "+sUsername+"                      ║");
             System.out.println("║          PASSWORD:                                      ║");
             System.out.println("║                                                         ║");
-            System.out.println("║                                                         ║");
-            System.out.println("║                                                         ║");
             System.out.println("╚═════════════════════════════════════════════════════════╝");
             System.out.print("  Escriba su password : ");
             Scanner inPassword = new Scanner(System.in);
@@ -97,14 +96,69 @@ public class Main {
                 System.out.println("║          USERNAME:    "+sUsername+"                      ║");
                 System.out.println("║          PASSWORD:    "+cPassword+"                      ║");
                 System.out.println("║                                                         ║");
-                System.out.println("║                                                         ║");
-                System.out.println("║                                                         ║");
                 System.out.println("╚═════════════════════════════════════════════════════════╝");
 
                 // Validacion login y si es correcta la contrase;a y username regresa 2, sino regresa 3
             }
         }
 
+        return result;
+    }
+
+    public static int printCreateProfile(){
+        int result = 0;
+
+        System.out.println("╔═════════════════════════════════════════════════════════╗");
+        System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
+        System.out.println("║                                                         ║");
+        System.out.println("║          USERNAME:                                      ║");
+        System.out.println("║          PASSWORD:                                      ║");
+        System.out.println("║                                                         ║");
+        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.print("  Ingrese su username: ");
+        Scanner inUsername = new Scanner(System.in);
+        String username = inUsername.nextLine();
+        String sUsername = "";
+
+        if (username.length() > 12){
+            clearConsole();
+            System.out.println("Username debe tener menos de 12 caracteres");
+        }else {
+            sUsername = String.format("%-12s", username);
+
+            System.out.println("╔═════════════════════════════════════════════════════════╗");
+            System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
+            System.out.println("║                                                         ║");
+            System.out.println("║          USERNAME:    "+sUsername+"                      ║");
+            System.out.println("║          PASSWORD:                                      ║");
+            System.out.println("║                                                         ║");
+            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            System.out.print("  Ingrese su password : ");
+            Scanner inPassword = new Scanner(System.in);
+            String password = inPassword.nextLine();
+            String cPassword = "";
+
+            if(password.length() > 12){
+                clearConsole();
+                System.out.println("Password debe tener menos de 12 caracteres");
+            }else {
+                for (var item : password.toCharArray()) {
+                    cPassword += "*";
+                }
+
+                cPassword = String.format("%-12s", cPassword);
+
+                System.out.println("╔═════════════════════════════════════════════════════════╗");
+                System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
+                System.out.println("║                                                         ║");
+                System.out.println("║          USERNAME:    "+sUsername+"                      ║");
+                System.out.println("║          PASSWORD:    "+cPassword+"                      ║");
+                System.out.println("║                                                         ║");
+                System.out.println("╚═════════════════════════════════════════════════════════╝");
+
+                // Crear cuenta, si se creo correctamente devolver 1, sino devolver 2
+            }
+        }
         return result;
     }
 
@@ -180,6 +234,7 @@ public class Main {
         System.out.println("╚═════════════════════════════════════════════════════════╝");
 
     }
+
     public static void topMovies() {
         System.out.println("╔═════════════════════════════════════════════════════════╗");
         System.out.println("║════════════════════Top 10 de películas══════════════════║");
@@ -244,6 +299,7 @@ public class Main {
     }
     //POST - Rating
 
+    //POST - Login and create
     public static String loginCreate (String username, String password, boolean create){
 
         CloseableHttpClient client = HttpClients.createDefault();
@@ -321,5 +377,22 @@ public class Main {
         {
             //  Handle any exceptions.
         }
+    }
+
+    public static String readCSV(String path) {
+        String result[];
+
+        Scanner scan = new Scanner(new File(path));
+
+        // Parsing
+        scan.useDelimiter(",");
+        result = new String[15];
+
+        while (scan.hasNext()) {
+            //recorrer el csv
+            System.out.print(scan.next());
+        }
+        sc.close();
+        //closes the scanner
     }
 }
