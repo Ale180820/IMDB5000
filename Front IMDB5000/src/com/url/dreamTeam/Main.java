@@ -19,7 +19,9 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+
+    public static String user;
+    public static void main(String[] args) throws FileNotFoundException{
         initProgram();
     }
 
@@ -109,7 +111,7 @@ public class Main {
         System.out.println("╚═════════════════════════════════════════════════════════╝");
         System.out.print("  Escriba su username o 'x' : ");
         Scanner inUsername = new Scanner(System.in);
-        String username = inUsername.nextLine();
+        String username = inUsername.nextLine().toLowerCase();
         String sUsername = "";
 
         if (username.length() > 12) {
@@ -159,7 +161,7 @@ public class Main {
                 result = loginCreate(sUsername.trim(), password.trim(), false) ? 2 : 3;
             }
         }
-
+        user = username;
         return result;
     }
 
@@ -175,7 +177,7 @@ public class Main {
         System.out.println("╚═════════════════════════════════════════════════════════╝");
         System.out.print("  Ingrese su username: ");
         Scanner inUsername = new Scanner(System.in);
-        String username = inUsername.nextLine();
+        String username = inUsername.nextLine().toLowerCase();
         String sUsername = "";
 
         if (username.length() > 12) {
@@ -218,6 +220,7 @@ public class Main {
                 result = loginCreate(sUsername.trim(), password.trim(), true) ? 1 : 2;
             }
         }
+        user = username;
         return result;
     }
 
@@ -454,10 +457,14 @@ public class Main {
     public static List<Movie> topTen() {
         List<Movie> topTen = new ArrayList<>();
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://127.0.0.1:5000/countries");
+
         try {
+            HttpGet httpget = new HttpGet(new URIBuilder("http://127.0.0.1:5000/movies")
+                    .addParameter("user", user)
+                    .build());
             HttpResponse httpresponse = httpclient.execute(httpget);
             var entity = httpresponse.getEntity();
+
             StringBuilder builder = new StringBuilder();
 
             if (entity != null) {
@@ -477,6 +484,8 @@ public class Main {
             }
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return topTen;
@@ -539,7 +548,7 @@ public class Main {
         // obtener las categorias
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:5000/categories");
-        List<String> categories = new ArrayList<String>();
+        List<String> categories = new ArrayList<>();
         try {
             HttpResponse httpresponse = httpclient.execute(httpget);
             var entity = httpresponse.getEntity();
@@ -555,8 +564,8 @@ public class Main {
                 JSONArray jsonArray = new JSONArray(builder.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-                    String jsonstring = jsonArray.getString(i);
-                    categories.add(jsonstring);
+                    String jsonString = jsonArray.getString(i);
+                    categories.add(jsonString);
                 }
             }
         } catch (IOException e) {
@@ -568,7 +577,11 @@ public class Main {
     public static List<String> showCategories() {
         // List<String> categories = getCategories();
         List<String> categories = Arrays.asList("Miedo", "Sci-Fi", "three");
-        System.out.println("Categorias");
+        System.out.println();
+        System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                              Categorias                             ║");
+        System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
+        System.out.println();
         var num = 1;
 
         for (var category : categories) {
@@ -580,39 +593,47 @@ public class Main {
         return categories;
     }
 
-    public static void selectFavCategories(List<String> categories) {
-        boolean isValid = false;
+    public static void selectFavCategories() {
+        boolean isValid;
+        boolean reintentar = true;
+        while(reintentar){
+            List<String>categories = showCategories();
+            System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
+            System.out.println("║  Ingresa el índice de tus categorias favoritas separadas por comas  ║");
+            System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
+            System.out.println("Ingresa x para omitir");
+            Scanner in = new Scanner(System.in);
+            String options = in.nextLine();
+            options = options.toLowerCase();
 
-        System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║  Ingresa el índice de tus categorias favoritas separadas por comas  ║");
-        System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
-        System.out.println("Ingresa X para regresar");
-        Scanner in = new Scanner(System.in);
-        String options = in.nextLine();
-        options = options.toLowerCase();
+            if (!options.contains("x")) {
+                String[] selectedCategoriesIndex = options.split(",");
+                // Eliminar numeros duplicados
+                LinkedHashSet linkedHashSet = new LinkedHashSet<>(List.of(selectedCategoriesIndex));
+                // Get back the array without duplicates
+                selectedCategoriesIndex = (String[]) linkedHashSet.toArray(new String[] {});
+                isValid = isValidCategories(selectedCategoriesIndex, categories.size());
 
-        if (!options.contains("x")) {
-            String[] selectedCategoriesIndex = options.split(",");
-            // Eliminar numeros duplicados
-            LinkedHashSet linkedHashSet = new LinkedHashSet<String>(List.of(selectedCategoriesIndex));
-            // Get back the array without duplicates
-            selectedCategoriesIndex = (String[]) linkedHashSet.toArray(new String[] {});
-            isValid = isValidCategories(selectedCategoriesIndex, categories.size());
+                if (isValid) {
+                    List<String> selectedCategories = new ArrayList<>();
+                    for (String categoryIndex : selectedCategoriesIndex) {
 
-            if (isValid) {
-                List<String> selectedCategories = new ArrayList<String>();
-                for (String categoryIndex : selectedCategoriesIndex) {
+                        var cat = categories.get(Integer.valueOf(categoryIndex) - 1);
+                        System.out.println(cat);
+                        selectedCategories.add(cat);
+                    }
 
-                    var cat = categories.get(Integer.valueOf(categoryIndex) - 1);
-                    System.out.println(cat);
-                    selectedCategories.add(cat);
+                    setFavCategories(selectedCategories);
+                    // no debe de reintentar nuevamente
+
                 }
 
-                setFavCategories(selectedCategories);
+            } else if (options.equals("")) {
+                System.out.println("Ingresa alguna de las categorias");
+                //debe reintentar
             }
-
-        } else if (options.equals("")) {
-
+            //no debe de reinternar
+            reintentar = false;
         }
 
     }
@@ -641,8 +662,8 @@ public class Main {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/categories");
         JSONObject json = new JSONObject();
-        json.put("FavCategories", categories);
-        json.put("username", "Eduarso");
+        json.put("favCategories", categories);
+        json.put("username", user);
         System.out.print(json);
         StringEntity entity = null;
         try {
