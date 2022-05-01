@@ -28,11 +28,12 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         initProgram();
     }
 
-    public static void initProgram() {
+    public static void initProgram() throws FileNotFoundException {
+        String s = readCSV("C:\\Users\\marce\\Downloads\\prueba.csv");
         int loginRes = printLogin();
         switch (loginRes) {
             case 1:
@@ -62,7 +63,7 @@ public class Main {
     }
 
     // Menu principal
-    public static void menuPrincipal() {
+    public static void menuPrincipal() throws FileNotFoundException {
         int option = 0;
         while (option != 3) {
             System.out.println("╔═════════════════════════════════════════════════════════╗");
@@ -331,6 +332,7 @@ public class Main {
     public static void deleteData() {
 
     }
+
     // GET y POST
 
     // POST - Search
@@ -687,8 +689,6 @@ public class Main {
     }
 
     public static String readCSV(String path) throws FileNotFoundException {
-        String result[];
-
         Scanner scan = null;
         try {
             scan = new Scanner(new File(path));
@@ -698,7 +698,6 @@ public class Main {
 
         // Parsing
         scan.useDelimiter(",");
-        result = new String[15];
 
         while (scan.hasNext()) {
             // recorrer el csv
