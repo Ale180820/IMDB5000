@@ -720,10 +720,6 @@ public class Main {
             movie.getActorsList();
         }
 
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
-        StringEntity entity;
-
         var movieList = new ArrayList<String>();
         movies.forEach(m -> movieList.add(new Gson().toJson(m)));
 
@@ -732,6 +728,10 @@ public class Main {
 
         try {
             for (int i = 0; i<movieList.size(); i++){
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
+                StringEntity entity;
+
                 firstElement = movieList.get(i);
                 json.put("movieList", firstElement);
 
@@ -740,14 +740,8 @@ public class Main {
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 CloseableHttpResponse response = client.execute(httpPost);
+                client.close();
             }
-//            entity = new StringEntity(json.toString());
-//            httpPost.setEntity(entity);
-//            httpPost.setHeader("Accept", "application/json");
-//            httpPost.setHeader("Content-type", "application/json");
-//            CloseableHttpResponse response = client.execute(httpPost);
-            //System.out.println(response.getStatusLine());
-            client.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
