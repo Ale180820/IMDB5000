@@ -31,8 +31,6 @@ public class Movie {
     public void setLanguage() { this.language = language; }
     public void setImdGb_score() { this.imdGb_score = imdGb_score; }
 
-    public Movie(){}
-
     public String toString() {
         return String.format("Titulo:%s | Director:%d | IMDB:%s | Lenguaje:%s", movie_title, director_name, imdGb_score, language);
     }

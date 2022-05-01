@@ -114,17 +114,12 @@ def get_categories():
 def set_fav_categories():
     if request.is_json:
         req = request.get_json()
-        categories, username = req["FavCategories"], req["username"]
-        users = firebase.get('/Users', '')
-        if check_if_user_exists(users, username):
-            prevCategories = list(users[username]["FavCategories"])
-            prevCategories = list(filter(lambda c: c != None, prevCategories))
-            for category in categories:
-                if category not in prevCategories:
-                    prevCategories.append(category)
-            users[username]["FavCategories"] = prevCategories
-            firebase.put('/', 'Users', users)
-            return jsonify(users[username]["FavCategories"]), 201
+        categories, username = req["favCategories"], req["username"]
+        user = firebase.get('/Users/'+username, '')
+        if user != None:
+            user["favCategories"] = categories
+            firebase.put('/Users', username, user)
+            return jsonify(user["favCategories"]), 201
         return {"error": "You don't have acces, srry ):"}, 403
     return {"error": "Request must be JSON"}, 415
 
