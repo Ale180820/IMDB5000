@@ -8,11 +8,14 @@
       <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/src/com/url/dreamTeam/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/url/dreamTeam/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/url/dreamTeam/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/url/dreamTeam/Movie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Movie.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Movie.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/url/dreamTeam/Pelicula.class" beforeDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
