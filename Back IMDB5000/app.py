@@ -131,7 +131,7 @@ def get_db_categories():
     movies = firebase.get('/Movies', '')
     categories = []
     for movie in movies:
-        for category in movie.get("genres"):##.split("|"):
+        for category in movie.get("genres"):
             if category not in categories:
                 categories.append(category)
     categories.sort()
@@ -149,7 +149,7 @@ def set_fav_categories():
     if request.is_json:
         req = request.get_json()
         categories, username = req["favCategories"], req["username"]
-        user = firebase.get('/Users/'+username, '')
+        user = firebase.get(f'/Users/{username}', '')
         if user != None:
             user["favCategories"] = categories
             firebase.put('/Users', username, user)
