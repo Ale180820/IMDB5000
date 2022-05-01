@@ -1,4 +1,5 @@
 # app.py
+from distutils import errors
 from flask import Flask, request, jsonify
 from firebase import firebase
 from cryptography.fernet import Fernet
@@ -13,20 +14,6 @@ firebase = firebase.FirebaseApplication(
 
 fernet = Fernet(b'zQg_8z-Jj1dv1Zk-DZRXn8W7tZFvS0l7y-fF8-f-zJg=')
 
-# @app.get("/countries")
-# def get_countries():
-#     firebase.put('/', "Usuarios", "Eduarso biyeda (:")
-#     return jsonify(countries)
-
-
-# @app.post("/countries")
-# def add_country():
-#     if request.is_json:
-#         country = request.get_json()
-#         country["id"] = _find_next_id()
-#         countries.append(country)
-#         return country, 201
-#     return {"error": "Request must be JSON"}, 415
 
 def check_if_user_exists(users, username):
     if users == None:
@@ -80,23 +67,27 @@ def add_movies():
         movies = movies["movieList"]
         movies = json.loads(movies)
 
-        dbMovieList = []
+        dbMovieList = {}
         for movie in movies:
             if movie.get("movie_title") != None:
+                standardActors = []
+                for actor in movie.get("actors"):
+                    standardActors.append(str(actor))
                 newMovie = {
-                    "color": movie.get("color"),
-                    "title": movie.get("movie_title"),
-                    "director_name": movie.get("director_name"),
-                    "genres": movie.get("genres"),
-                    "plot_keywords": movie.get("plot_keywords"),
-                    "language": movie.get("language"),
-                    "imbd_score": movie.get("imbd_score"),
-                    "title_year": movie.get("title_year"),
-                    "actors": movie.get("actors"),
+                    "color": str(movie.get("color")),
+                    "title": str(movie.get("movie_title")),
+                    "director_name": str(movie.get("director_name")),
+                    "genres": str(movie.get("genres")),
+                    "plot_keywords": str(movie.get("plot_keywords")),
+                    "language": str(movie.get("language")),
+                    "imdb_score": movie.get("imdb_score"),
+                    "title_year": str(movie.get("title_year")),
+                    "actors": standardActors,
                 }
-                dbMovieList.append(newMovie)
-        firebase.put('/', 'Movies', movies)
-        return jsonify(movies), 201
+                dbMovieList[newMovie["title"]] = newMovie
+        print(len(list(dbMovieList.keys())))
+        firebase.put('/', 'Movies', dbMovieList)
+        return {"msg": "Movies uploaded (:"}, 201
     return {"error": "Request must be JSON"}, 415
 
 
@@ -110,24 +101,28 @@ def search_movies():
     category, query = request.args.get("category"), request.args.get("query")
     movies = firebase.get('/Movies', '')
     if movies != None:
-        movies = list(filter(lambda m: m[category] == query, movies))
-        return jsonify(movies)
+        print(movies)
+        movies = list(filter(lambda m:  m.get(
+            category).find(query) != -1, movies))
+        print(movies)
+        return jsonify(movies), 200
     return {"error": "No movies found"}, 418
 
 
 def get_db_categories():
-    movies = firebase.get('/Movies')
+    movies = firebase.get('/Movies', '')
     categories = []
     for movie in movies:
-        for category in movie.categories:
+        for category in movie.get("genres").split("|"):
             if category not in categories:
                 categories.append(category)
+    categories.sort()
     return categories
 
 
 @app.get("/categories")
 def get_categories():
-    return jsonify(get_db_categories())
+    return jsonify(get_db_categories()), 200
 
 
 @app.post("/categories")

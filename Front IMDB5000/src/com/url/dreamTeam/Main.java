@@ -1,6 +1,5 @@
 package com.url.dreamTeam;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.http.HttpResponse;
@@ -23,7 +22,7 @@ public class Main {
 
 
     public static String user;
-    public static void main(String[] args) throws FileNotFoundException {menuPrincipal();}
+    public static void main(String[] args) throws FileNotFoundException { menuPrincipal(); }
 
     public static void initProgram() {
         try {
@@ -90,8 +89,9 @@ public class Main {
                     System.out.print("Ingrese la dirección del archivo:  ");
                     var fileAddress = in.nextLine();
                     fileAddress = fileAddress.replaceAll("\"", "");
-                    sendCSVMovies(fileAddress);
-                    System.out.println("Archivo cargado correctamente");
+                    if (sendCSVMovies(fileAddress)){
+                        System.out.println("Archivo cargado correctamente");
+                    }
                     break;
                 case 5:
                     initProgram();
@@ -381,7 +381,7 @@ public class Main {
             System.out.println(httpresponse.getStatusLine().getReasonPhrase());
             StringBuilder builder = new StringBuilder();
 
-            if (entity.getContent() == null) {
+            if (entity.getContent() != null) {
                 InputStream inputStream = entity.getContent();
                 var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 for (String line = null; (line = bufferedReader.readLine()) != null;) {
@@ -403,43 +403,6 @@ public class Main {
             e.printStackTrace();
         }
         return topTen;
-
-//        CloseableHttpClient httpclient = HttpClients.createDefault();
-//        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies/search");
-//        JSONObject json = new JSONObject();
-//
-//        // json
-//        json.put("category", categorySend);
-//        json.put("search", word);
-//        StringEntity entity = null;
-//        InputStream inputStream = null;
-//        String result = null;
-//        try {
-//            entity = new StringEntity(json.toString());
-//            httpPost.setEntity(entity);
-//            httpPost.setHeader("Accept", "application/json");
-//            httpPost.setHeader("Content-type", "application/json");
-//            CloseableHttpResponse response = httpclient.execute(httpPost);
-//
-//            HttpEntity ee = response.getEntity();
-//            inputStream = ee.getContent();
-//            // json is UTF-8 by default
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-//            StringBuilder sb = new StringBuilder();
-//
-//            String line = null;
-//            while ((line = reader.readLine()) != null) {
-//                sb.append(line + "\n");
-//            }
-//            result = sb.toString();
-//            JSONObject jsonR = new JSONObject(result);
-//            httpclient.close();
-//
-//            return (String) jsonR.get("search");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return "No encontrado";
     }
 
     // POST - Rating
@@ -557,7 +520,6 @@ public class Main {
     }
 
     public static List<String> getCategories() {
-        // obtener las categorias
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:5000/categories");
         List<String> categories = new ArrayList<>();
@@ -587,8 +549,7 @@ public class Main {
     }
 
     public static List<String> showCategories() {
-        // List<String> categories = getCategories();
-        List<String> categories = Arrays.asList("Miedo", "Sci-Fi", "three");
+        List<String> categories = getCategories();
         System.out.println();
         System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
         System.out.println("║                              Categorias                             ║");
@@ -708,7 +669,7 @@ public class Main {
         }
     }
 
-    public static void sendCSVMovies(String path) throws FileNotFoundException {
+    public static Boolean sendCSVMovies(String path) throws FileNotFoundException {
 
         List<Movie> movies = new CsvToBeanBuilder(new FileReader(path))
                 .withType(Movie.class)
@@ -721,40 +682,32 @@ public class Main {
             movie.TrimAll();
             movie.getActorsList();
         }
-        StringEntity entity;
 
-        var movieList = new ArrayList<String>();
-        movies.forEach(m -> movieList.add(new Gson().toJson(m)));
-        String firstElement;
+        List<Movie> newMoviesList = new ArrayList<>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            var newMovie = movies.get(i);
+            if (i == 200) {
+                break;
+            } else if (i != 52 && i != 53 && i != 54) {
+                newMoviesList.add(newMovie);
+            }
+        }
 
         JSONObject json = new JSONObject();
         try {
-//            for (int i = 0; i<movieList.size(); i++){
-//                System.out.println(i);
-//                CloseableHttpClient client = HttpClients.createDefault();
-//                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
-//
-//                firstElement = movieList.get(i);
-//                json.put("movieList", firstElement);
-//
-//                entity = new StringEntity(json.toString());
-//                httpPost.setEntity(entity);
-//                httpPost.setHeader("Accept", "application/json");
-//                httpPost.setHeader("Content-type", "application/json");
-//                CloseableHttpResponse response = client.execute(httpPost);
-//                client.close();
-//            }
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
 
-            json.put("movieList", new Gson().toJson(movies));
-
-            entity = new StringEntity(json.toString());
+            json.put("movieList", new Gson().toJson(newMoviesList));
+            StringEntity entity = new StringEntity(json.toString());
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
             CloseableHttpResponse response = client.execute(httpPost);
             client.close();
+
+            return response.getStatusLine().getStatusCode() == 201;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -762,5 +715,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
