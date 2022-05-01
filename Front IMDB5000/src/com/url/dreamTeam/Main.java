@@ -728,11 +728,11 @@ public class Main {
         movies.forEach(m -> movieList.add(new Gson().toJson(m)));
 
         JSONObject json = new JSONObject();
-        var firstElement = movies.get(0);
+        var firstElement = movieList.get(0);
         json.put("movieList", firstElement);
 
         try {
-            entity = new StringEntity(firstElement.toString());
+            entity = new StringEntity(json.toString());
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
