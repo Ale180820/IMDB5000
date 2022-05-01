@@ -24,29 +24,29 @@ public class Main {
     }
 
     public static void initProgram() throws FileNotFoundException {
-        String s = readCSV("C:\\Users\\marce\\Downloads\\prueba.csv");
-        int loginRes = printLogin();
-        switch (loginRes) {
-            case 1:
-                // crear usuario
-                System.out.println("CREAR USUARIO");
-                printCreateProfile();
-                break;
-            case 2:
-                // caso login valido
-                System.out.println("LOGIN CORRECTO");
-                menuPrincipal();
-                break;
-            case 3:
-                // caso login invalido
-                System.out.println("LOGIN INCORRECTO");
-                break;
-            case 4:
-                // caso de error
-                System.out.println("ERROR");
-                break;
-        }
         try {
+            //String s = readCSV("C:\\Users\\marce\\Downloads\\prueba.csv");
+            int loginRes = printLogin();
+            switch (loginRes) {
+                case 1:
+                    // crear usuario
+                    System.out.println("CREAR USUARIO");
+                    printCreateProfile();
+                    break;
+                case 2:
+                    // caso login valido
+                    System.out.println("LOGIN CORRECTO");
+                    menuPrincipal();
+                    break;
+                case 3:
+                    // caso login invalido
+                    System.out.println("LOGIN INCORRECTO");
+                    break;
+                case 4:
+                    // caso de error
+                    System.out.println("ERROR");
+                    break;
+            }
             System.in.read();
         } catch (IOException e) {
             e.printStackTrace();
