@@ -74,9 +74,11 @@ def login():
 def add_movies():
     if request.is_json:
         movies = request.get_json()
-        movies = movies["movies"]
-        firebase.put('/', 'Movies', movies)
-        return 201
+        print(movies)
+        movies = movies["movieList"]
+        print(movies)
+        #firebase.put('/', 'Movies', movies)
+        return movies, 201
     return {"error": "Request must be JSON"}, 415
 
 

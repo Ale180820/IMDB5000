@@ -1,6 +1,7 @@
 package com.url.dreamTeam;
 
 import com.google.gson.Gson;
+import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,13 +22,10 @@ public class Main {
 
 
     public static String user;
-    public static void main(String[] args) throws FileNotFoundException{
-        initProgram();
-    }
+    public static void main(String[] args) throws FileNotFoundException {menuPrincipal();}
 
-    public static void initProgram() throws FileNotFoundException {
+    public static void initProgram() {
         try {
-            //String s = readCSV("C:\\Users\\marce\\Downloads\\prueba.csv");
             user = "";
             int loginRes = printLogin();
             switch (loginRes) {
@@ -52,7 +50,7 @@ public class Main {
                     System.out.println("ERROR");
                     break;
             }
-            System.in.read();
+            new Scanner(System.in).nextLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,7 +66,8 @@ public class Main {
             System.out.println("║                   1. Calificar peliculas                ║");
             System.out.println("║                 2. Obtener recomendaciones              ║");
             System.out.println("║                      3. Borrar datos                    ║");
-            System.out.println("║                      4. Cerrar Sesión                   ║");
+            System.out.println("║                4. Cargar csv con películas              ║");
+            System.out.println("║                      5. Cerrar Sesión                   ║");
             System.out.println("║                                                         ║");
             System.out.println("╚═════════════════════════════════════════════════════════╝");
             System.out.print("Seleccione una opción:  ");
@@ -87,12 +86,18 @@ public class Main {
                     deleteData();
                     break;
                 case 4:
+                    System.out.print("Ingrese la dirección del archivo:  ");
+                    var fileAddress = in.nextLine();
+                    fileAddress = fileAddress.replaceAll("\"", "");
+                    sendCSVMovies(fileAddress);
+                    System.out.println("Archivo cargado correctamente");
+                    break;
+                case 5:
                     initProgram();
                     break;
                 default:
                     System.out.print("Opción incorrecta, intentelo nuevamente.");
-                    Scanner error = new Scanner(System.in);
-                    in.nextLine();
+                    new Scanner(System.in).nextLine();
                     clearConsole();
                     break;
             }
@@ -102,7 +107,7 @@ public class Main {
     // 1. Login y creación de cuenta
     public static int printLogin() {
 
-        int result = 0;
+        int result;
         System.out.println("╔═════════════════════════════════════════════════════════╗");
         System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
         System.out.println("║                                                         ║");
@@ -115,7 +120,7 @@ public class Main {
         System.out.print("  Escriba su username o 'x' : ");
         Scanner inUsername = new Scanner(System.in);
         String username = inUsername.nextLine().toLowerCase();
-        String sUsername = "";
+        String sUsername;
 
         if (username.length() > 12) {
             clearConsole();
@@ -144,7 +149,6 @@ public class Main {
                 System.out.println("Password debe tener menos de 12 caracteres");
                 result = 4;
             } else {
-                result = 2;
                 for (int i = 0; i < password.length(); i++) {
                     cPassword += "*";
                 }
@@ -703,22 +707,44 @@ public class Main {
         }
     }
 
-    public static String readCSV(String path) throws FileNotFoundException {
-        Scanner scan = null;
+    public static void sendCSVMovies(String path) throws FileNotFoundException {
+
+        List<Movie> movies = new CsvToBeanBuilder(new FileReader(path))
+                .withType(Movie.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withIgnoreEmptyLine(true)
+                .build()
+                .parse();
+
+        for (var movie: movies) {
+            movie.getActorsList();
+        }
+
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
+        StringEntity entity;
+
+        var movieList = new ArrayList<String>();
+        movies.forEach(m -> movieList.add(new Gson().toJson(m)));
+
+        JSONObject json = new JSONObject();
+        var firstElement = movies.get(0);
+        json.put("movieList", firstElement);
+
         try {
-            scan = new Scanner(new File(path));
-        } catch (FileNotFoundException e) {
+            entity = new StringEntity(firstElement.toString());
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            CloseableHttpResponse response = client.execute(httpPost);
+            System.out.println(response.getStatusLine());
+            client.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Parsing
-        scan.useDelimiter(",");
-
-        while (scan.hasNext()) {
-            // recorrer el csv
-            System.out.print(scan.next());
-        }
-        // closes the scanner
-        return path;
     }
 }
