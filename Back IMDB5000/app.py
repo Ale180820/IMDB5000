@@ -72,16 +72,17 @@ def add_movies():
             if movie.get("movie_title") != None:
                 standardActors = []
                 for actor in movie.get("actors"):
-                    standardActors.append(str(actor))
+                    standardActors.append(actor)
                 newMovie = {
-                    "color": str(movie.get("color")),
-                    "movie_title": str(movie.get("movie_title")),
-                    "director_name": str(movie.get("director_name")),
-                    "genres": str(movie.get("genres")),
-                    "plot_keywords": str(movie.get("plot_keywords")),
-                    "language": str(movie.get("language")),
+                    "color": movie.get("color"),
+                    "movie_title": movie.get("movie_title"),
+                    "director_name": movie.get("director_name"),
+                    "genres": movie.get("genres").split("|"),
+                    "plot_keywords": movie.get("plot_keywords"),
+                    "language": movie.get("language"),
                     "imdb_score": movie.get("imdb_score"),
-                    "title_year": str(movie.get("title_year")),
+                    "plot_keywords": movie.get("plot_keywords").split("|"),
+                    "title_year": movie.get("title_year"),
                     "actors": standardActors,
                 }
                 dbMovieList.append(newMovie)
@@ -99,12 +100,23 @@ def recommend():
 def search_movies():
     category, query = request.args.get("category"), request.args.get("query")
     movies = firebase.get('/Movies', '')
+    movieResult = []
     reverse = True
     if movies != None and query != None and category != None:
         if category == 'imdb_score':
             query = float(query)
             movies = [movie for movie in movies if float(movie.get(
                 category)) >= query]
+        elif category in ["plot_keywords", "genres", "actors"]:
+            for movie in movies:
+                categoryResult = movie.get(category)
+                if categoryResult != None:
+                    for elem in categoryResult:
+                        if query in elem:
+                            print(query, elem)
+                            movieResult.append(movie)
+                            break
+            return jsonify(movieResult), 200
         else:
             query = query.lower()
             movies = [movie for movie in movies if query in movie.get(
