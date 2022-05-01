@@ -119,7 +119,6 @@ def search_movies():
             for movie in movieResult:
                 movie["plot_keywords"] = "|".join(movie.get("plot_keywords"))
                 movie["genres"] = "|".join(movie.get("genres"))
-                movie["actors"] = "|".join(movie.get("actors"))
             return jsonify(movieResult), 200
         else:
             query = query.lower()
