@@ -34,10 +34,6 @@ public class Movie {
         actors = List.of(actor_1_name, actor_2_name, actor_3_name);
     }
 
-    public String getMovie_title() { return movie_title; }
-
-    public void setMovie_title(String movie_title) { this.movie_title = movie_title; }
-
     public Movie(){
         //Empty
     }
@@ -53,5 +49,11 @@ public class Movie {
         plot_keywords = plot_keywords == null ? null : new String(plot_keywords.getBytes(), StandardCharsets.US_ASCII);
         language = language == null ? null : new String(language.getBytes(), StandardCharsets.US_ASCII);
         title_year = title_year == null ? null : new String(title_year.getBytes(), StandardCharsets.US_ASCII);
+    }
+
+    public String getMovie_title() { return movie_title; }
+
+    public String toFormattedString(int number) {
+        return String.format("%-" + number + "s", movie_title);
     }
 }

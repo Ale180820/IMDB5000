@@ -286,14 +286,15 @@ public class Main {
         clearConsole();
 
         // Buscar pelicula
-        List<Movie> topTen = MovieSearch(category, word);
+        List<Movie> movieList = MovieSearch(category, word);
+        var longestMovie = Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getMovie_title().length()));
 
         System.out.println("╔═════════════════════════════════════════════════════════╗");
         System.out.println("║═════════════════════Buscar películas════════════════════║");
         System.out.println("║                                                         ║");
         System.out.println("║                 Resultado de la búsqueda                ║");
-        for (var movie: topTen) {
-            System.out.println("║" + movie.toString());
+        for (var movie: movieList) {
+            System.out.println("║" + movie.toFormattedString(longestMovie.getMovie_title().length()) + "║");
         }
         System.out.println("║                                                         ║");
         System.out.println("║           Ingresa la valoración de la película          ║");
@@ -683,23 +684,12 @@ public class Main {
             movie.getActorsList();
         }
 
-        List<Movie> newMoviesList = new ArrayList<>();
-
-        for (int i = 0; i < movies.size(); i++) {
-            var newMovie = movies.get(i);
-            if (i == 200) {
-                break;
-            } else if (i != 52 && i != 53 && i != 54) {
-                newMoviesList.add(newMovie);
-            }
-        }
-
         JSONObject json = new JSONObject();
         try {
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
 
-            json.put("movieList", new Gson().toJson(newMoviesList));
+            json.put("movieList", new Gson().toJson(movies));
             StringEntity entity = new StringEntity(json.toString());
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");

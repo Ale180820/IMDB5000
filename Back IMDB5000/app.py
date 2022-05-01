@@ -67,7 +67,7 @@ def add_movies():
         movies = movies["movieList"]
         movies = json.loads(movies)
 
-        dbMovieList = {}
+        dbMovieList = []
         for movie in movies:
             if movie.get("movie_title") != None:
                 standardActors = []
@@ -75,7 +75,7 @@ def add_movies():
                     standardActors.append(str(actor))
                 newMovie = {
                     "color": str(movie.get("color")),
-                    "title": str(movie.get("movie_title")),
+                    "movie_title": str(movie.get("movie_title")),
                     "director_name": str(movie.get("director_name")),
                     "genres": str(movie.get("genres")),
                     "plot_keywords": str(movie.get("plot_keywords")),
@@ -84,8 +84,7 @@ def add_movies():
                     "title_year": str(movie.get("title_year")),
                     "actors": standardActors,
                 }
-                dbMovieList[newMovie["title"]] = newMovie
-        print(len(list(dbMovieList.keys())))
+                dbMovieList.append(newMovie)
         firebase.put('/', 'Movies', dbMovieList)
         return {"msg": "Movies uploaded (:"}, 201
     return {"error": "Request must be JSON"}, 415
@@ -100,11 +99,18 @@ def recommend():
 def search_movies():
     category, query = request.args.get("category"), request.args.get("query")
     movies = firebase.get('/Movies', '')
-    if movies != None:
-        print(movies)
-        movies = list(filter(lambda m:  m.get(
-            category).find(query) != -1, movies))
-        print(movies)
+    reverse = True
+    if movies != None and query != None and category != None:
+        if category == 'imdb_score':
+            query = float(query)
+            movies = [movie for movie in movies if float(movie.get(
+                category)) >= query]
+        else:
+            query = query.lower()
+            movies = [movie for movie in movies if query in movie.get(
+                category).lower()]
+            reverse = False
+        movies.sort(key=lambda x: x.get(category), reverse=reverse)
         return jsonify(movies), 200
     return {"error": "No movies found"}, 418
 
