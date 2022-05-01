@@ -1,6 +1,7 @@
 package com.url.dreamTeam;
 
 import com.opencsv.bean.CsvBindByName;
+import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -52,8 +53,28 @@ public class Movie {
     }
 
     public String getMovie_title() { return movie_title; }
+    public String getStringActors(){
+        return StringUtils.join(actors, "|");
+    }
+    public String toFormattedString(int category) {
+        switch (category) {
+            case 2:
+                return movie_title + " - " + director_name;
+            case 3:
+                return movie_title + " - " + getStringActors();
+            case 4:
+                return movie_title + " - " + genres;
+            case 5:
+                return movie_title + " - " + plot_keywords;
+            case 6:
+                return movie_title + " - " + language;
+            case 7:
+                return movie_title + " - " + imdb_score;
+            case 8:
+                return movie_title + " - " + title_year;
+            default:
+                return movie_title;
+        }
 
-    public String toFormattedString(int number) {
-        return String.format("%-" + number + "s", movie_title);
     }
 }

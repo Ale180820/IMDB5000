@@ -2,6 +2,7 @@ package com.url.dreamTeam;
 
 import com.google.gson.Gson;
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -137,14 +138,15 @@ public class Main {
         } else {
             sUsername = String.format("%-12s", username);
 
-            System.out.println("╔═════════════════════════════════════════════════════════╗");
-            System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
-            System.out.println("║                                                         ║");
-            System.out.println("║          USERNAME:    " + sUsername + "                      ║");
-            System.out.println("║          PASSWORD:                                      ║");
-            System.out.println("║                                                         ║");
-            System.out.println("╚═════════════════════════════════════════════════════════╝");
-            System.out.print("  Escriba su password : ");
+            int sizeOfString = ("          USERNAME:    " + sUsername + "                      ").length();
+            System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+            System.out.println("║"+ formatStringSize("════════════════════ INICIAR SESIÓN ═════════════════════", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("          USERNAME:    " + sUsername + "                 ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("          PASSWORD:                                      ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+            System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
+            System.out.print("  Ingrese su password : ");
             Scanner inPassword = new Scanner(System.in);
             String password = inPassword.nextLine();
             String cPassword = "";
@@ -158,16 +160,16 @@ public class Main {
                     cPassword += "*";
                 }
 
-                cPassword = String.format("%-12s", cPassword);
+                int sizeOfPassString = ("║          PASSWORD:    " + cPassword + "                      ║").length();
+                sizeOfString =  sizeOfPassString > sizeOfString ? sizeOfPassString : sizeOfString;
 
-                System.out.println("╔═════════════════════════════════════════════════════════╗");
-                System.out.println("║═══════════════ BIENVENIDO A LA APLICACIÓN ══════════════║");
-                System.out.println("║                                                         ║");
-                System.out.println("║          USERNAME:    " + sUsername + "                      ║");
-                System.out.println("║          PASSWORD:    " + cPassword + "                      ║");
-                System.out.println("║                                                         ║");
-                System.out.println("╚═════════════════════════════════════════════════════════╝");
-
+                System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+                System.out.println("║"+ formatStringSize("════════════════════ INICIAR SESIÓN ═════════════════════", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("          USERNAME:    " + sUsername + "                 ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("          PASSWORD:    " + cPassword + "                 ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+                System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
                 // Validacion login y si es correcta la contrase;a y username regresa 2, sino
                 // regresa 3
                 result = loginCreate(sUsername.trim(), password.trim(), false) ? 2 : 3;
@@ -198,13 +200,14 @@ public class Main {
         } else {
             sUsername = String.format("%-12s", username);
 
-            System.out.println("╔═════════════════════════════════════════════════════════╗");
-            System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
-            System.out.println("║                                                         ║");
-            System.out.println("║          USERNAME:    " + sUsername + "                      ║");
-            System.out.println("║          PASSWORD:                                      ║");
-            System.out.println("║                                                         ║");
-            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            int sizeOfString = ("          USERNAME:    " + sUsername + "                      ").length();
+            System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+            System.out.println("║"+ formatStringSize("═════════════════ CREACIÓN DE USUARIOS ══════════════════", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("          USERNAME:    " + sUsername + "                 ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("          PASSWORD:                                      ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+            System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
             System.out.print("  Ingrese su password : ");
             Scanner inPassword = new Scanner(System.in);
             String password = inPassword.nextLine();
@@ -220,13 +223,16 @@ public class Main {
 
                 cPassword = String.format("%-12s", cPassword);
 
-                System.out.println("╔═════════════════════════════════════════════════════════╗");
-                System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
-                System.out.println("║                                                         ║");
-                System.out.println("║          USERNAME:    " + sUsername + "                      ║");
-                System.out.println("║          PASSWORD:    " + cPassword + "                      ║");
-                System.out.println("║                                                         ║");
-                System.out.println("╚═════════════════════════════════════════════════════════╝");
+                int sizeOfPassString = ("║          PASSWORD:    " + cPassword + "                      ║").length();
+                sizeOfString =  sizeOfPassString > sizeOfString ? sizeOfPassString : sizeOfString;
+
+                System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+                System.out.println("║"+ formatStringSize("═════════════════ CREACIÓN DE USUARIOS ══════════════════", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("          USERNAME:    " + sUsername + "                 ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("          PASSWORD:    " + cPassword + "                 ", sizeOfString)+"║");
+                System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+                System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
 
                 // Crear cuenta, si se creo correctamente devolver 1, sino devolver 2
                 result = loginCreate(sUsername.trim(), password.trim(), true);
@@ -293,17 +299,21 @@ public class Main {
         List<Movie> movieList = MovieSearch(category, word);
         var longestMovie = Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getMovie_title().length()));
 
-        System.out.println("╔═════════════════════════════════════════════════════════╗");
-        System.out.println("║═════════════════════Buscar películas════════════════════║");
-        System.out.println("║                                                         ║");
-        System.out.println("║                 Resultado de la búsqueda                ║");
+        var sizeOfString = (longestMovie.getMovie_title()).length() * 2;
+
+        System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+        System.out.println("║"+ formatStringSize("════════════════════ Buscar películas ═════════════════════", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("                 Resultado de la búsqueda                ", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
         for (var movie: movieList) {
-            System.out.println("║" + movie.toFormattedString(longestMovie.getMovie_title().length()) + "║");
+            System.out.println("║"+ formatStringSize(movie.toFormattedString(category), sizeOfString)+"║");
         }
-        System.out.println("║                                                         ║");
-        System.out.println("║           Ingresa la valoración de la película          ║");
-        System.out.println("║                                                         ║");
-        System.out.println("╚═════════════════════════════════════════════════════════╝");
+        System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("           Ingresa la valoración de la película          ", sizeOfString)+"║");
+        System.out.println("║"+ formatStringSize("                                                         ", sizeOfString)+"║");
+        System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
         System.out.print("Ingresa tu valoración entre 1 y 10:  ");
         int rating = Integer.parseInt(searchWord.nextLine());
         clearConsole();
@@ -368,7 +378,7 @@ public class Main {
                 categorySend = "imdb_score";
                 break;
             case 8:
-                categorySend = "year";
+                categorySend = "title_year";
                 break;
             default:
                 break;
@@ -712,5 +722,13 @@ public class Main {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static String formatStringSize(String text, int number) {
+        return String.format("%-" + number + "s", text);
+    }
+
+    public static String formatStringHorizontal(int number) {
+        return StringUtils.repeat("═", number);
     }
 }
