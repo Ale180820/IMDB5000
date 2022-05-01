@@ -10,10 +10,6 @@ firebase = firebase.FirebaseApplication(
 
 fernet = Fernet(b'zQg_8z-Jj1dv1Zk-DZRXn8W7tZFvS0l7y-fF8-f-zJg=')
 
-# def _find_next_id():
-#     return max(country["id"] for country in countries) + 1
-
-
 # @app.get("/countries")
 # def get_countries():
 #     firebase.put('/', "Usuarios", "Eduarso biyeda (:")
@@ -89,15 +85,14 @@ def recommend():
     return jsonify(recommender.recommend([], []))
 
 
-@app.post("/movies/search")
+@app.get("/movies")
 def search_movies():
-    if request.is_json:
-        query = request.get_json()
-        value, category = query["value"], query["category"]
-        movies = firebase.get('/Movies')
-        movies = list(filter(lambda m: m[category] == value, movies))
+    category, query = request.args.get("category"), request.args.get("query")
+    movies = firebase.get('/Movies', '')
+    if movies != None:
+        movies = list(filter(lambda m: m[category] == query, movies))
         return jsonify(movies)
-    return {"error": "Request must be JSON"}, 415
+    return {"error": "No movies found"}, 418
 
 
 def get_db_categories():
