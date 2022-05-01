@@ -32,9 +32,13 @@ public class Main {
                 case 1:
                     // crear usuario
                     System.out.println("CREAR USUARIO");
-                    printCreateProfile();
-                    selectFavCategories();
-                    menuPrincipal();
+                    if(printCreateProfile()){
+                        selectFavCategories();
+                        menuPrincipal();
+                    }else{
+                        System.out.println("No se registro el usuario");
+                    }
+
                     break;
                 case 2:
                     // caso login valido
@@ -173,8 +177,8 @@ public class Main {
         return result;
     }
 
-    public static int printCreateProfile() {
-        int result = 0;
+    public static boolean printCreateProfile() {
+        boolean result  = false;
 
         System.out.println("╔═════════════════════════════════════════════════════════╗");
         System.out.println("║═════════════════ CREACIÓN DE USUARIOS ══════════════════║");
@@ -225,7 +229,7 @@ public class Main {
                 System.out.println("╚═════════════════════════════════════════════════════════╝");
 
                 // Crear cuenta, si se creo correctamente devolver 1, sino devolver 2
-                result = loginCreate(sUsername.trim(), password.trim(), true) ? 1 : 2;
+                result = loginCreate(sUsername.trim(), password.trim(), true);
             }
         }
         user = username;
@@ -560,6 +564,8 @@ public class Main {
 
         for (var category : categories) {
             System.out.print(num + "." + category + "   ");
+            if(num%5==0)
+                System.out.println();
             num++;
         }
         System.out.println();

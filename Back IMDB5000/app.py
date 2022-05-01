@@ -131,7 +131,7 @@ def get_db_categories():
     movies = firebase.get('/Movies', '')
     categories = []
     for movie in movies:
-        for category in movie.get("genres").split("|"):
+        for category in movie.get("genres"):##.split("|"):
             if category not in categories:
                 categories.append(category)
     categories.sort()
@@ -140,6 +140,7 @@ def get_db_categories():
 
 @app.get("/categories")
 def get_categories():
+    print(get_db_categories())
     return jsonify(get_db_categories()), 200
 
 
