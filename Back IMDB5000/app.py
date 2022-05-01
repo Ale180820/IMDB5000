@@ -127,9 +127,9 @@ def search_movies():
                 category).lower()]
             reverse = False
         for movie in movies:
-            movie["plot_keywords"] = movie.get("plot_keywords").join("|")
-            movie["genres"] = movie.get("genres").join("|")
-            movie["actors"] = movie.get("actors").join("|")
+            movie["plot_keywords"] = "|".join(movie.get("plot_keywords"))
+            movie["genres"] = "|".join(movie.get("genres"))
+            movie["actors"] = "|".join(movie.get("actors"))
         movies.sort(key=lambda x: x.get(category), reverse=reverse)
         return jsonify(movies), 200
     return {"error": "No movies found"}, 418
