@@ -2,6 +2,9 @@
 from flask import Flask, request, jsonify
 from firebase import firebase
 from cryptography.fernet import Fernet
+import json
+
+from matplotlib.pyplot import title
 import imdb_recommender as recommender
 
 app = Flask(__name__)
@@ -74,12 +77,25 @@ def login():
 def add_movies():
     if request.is_json:
         movies = request.get_json()
-        print(movies)
         movies = movies["movieList"]
-        print(movies)
-        #firebase.put('/', 'Movies', movies)
-        #firebase.post('/', 'Movies', movies)
-        #firebase.post('/Movies', movies)
+        movies = json.loads(movies)
+
+        dbMovieList = []
+        for movie in movies:
+            if movie.get("movie_title") != None:
+                newMovie = {
+                    "color": movie.get("color"),
+                    "title": movie.get("movie_title"),
+                    "director_name": movie.get("director_name"),
+                    "genres": movie.get("genres"),
+                    "plot_keywords": movie.get("plot_keywords"),
+                    "language": movie.get("language"),
+                    "imbd_score": movie.get("imbd_score"),
+                    "title_year": movie.get("title_year"),
+                    "actors": movie.get("actors"),
+                }
+                dbMovieList.append(newMovie)
+        firebase.put('/', 'Movies', movies)
         return jsonify(movies), 201
     return {"error": "Request must be JSON"}, 415
 

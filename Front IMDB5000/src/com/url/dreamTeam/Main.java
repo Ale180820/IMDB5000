@@ -721,49 +721,40 @@ public class Main {
             movie.TrimAll();
             movie.getActorsList();
         }
-
-<<<<<<< Updated upstream
-=======
         StringEntity entity;
 
->>>>>>> Stashed changes
         var movieList = new ArrayList<String>();
         movies.forEach(m -> movieList.add(new Gson().toJson(m)));
         String firstElement;
 
         JSONObject json = new JSONObject();
         try {
-            for (int i = 0; i<movieList.size(); i++){
-<<<<<<< Updated upstream
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
-                StringEntity entity;
+//            for (int i = 0; i<movieList.size(); i++){
+//                System.out.println(i);
+//                CloseableHttpClient client = HttpClients.createDefault();
+//                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
+//
+//                firstElement = movieList.get(i);
+//                json.put("movieList", firstElement);
+//
+//                entity = new StringEntity(json.toString());
+//                httpPost.setEntity(entity);
+//                httpPost.setHeader("Accept", "application/json");
+//                httpPost.setHeader("Content-type", "application/json");
+//                CloseableHttpResponse response = client.execute(httpPost);
+//                client.close();
+//            }
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
 
-=======
-                System.out.println(i);
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
->>>>>>> Stashed changes
-                firstElement = movieList.get(i);
-                json.put("movieList", firstElement);
+            json.put("movieList", new Gson().toJson(movies));
 
-                entity = new StringEntity(json.toString());
-                httpPost.setEntity(entity);
-                httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-                CloseableHttpResponse response = client.execute(httpPost);
-                client.close();
-            }
-<<<<<<< Updated upstream
-=======
-//            json.put("movieList", firstElement);
-//            entity = new StringEntity(json.toString());
-//            httpPost.setEntity(entity);
-//            httpPost.setHeader("Accept", "application/json");
-//            httpPost.setHeader("Content-type", "application/json");
-//            CloseableHttpResponse response = client.execute(httpPost);
-//            System.out.println(response.getStatusLine());
->>>>>>> Stashed changes
+            entity = new StringEntity(json.toString());
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            CloseableHttpResponse response = client.execute(httpPost);
+            client.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
