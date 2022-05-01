@@ -729,7 +729,6 @@ public class Main {
 
         JSONObject json = new JSONObject();
         var firstElement = movieList.get(0);
-        json.put("movieList", firstElement);
 
         try {
             for (int i = 0; i<movieList.size(); i++){
