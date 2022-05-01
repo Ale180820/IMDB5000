@@ -732,12 +732,22 @@ public class Main {
         json.put("movieList", firstElement);
 
         try {
-            entity = new StringEntity(json.toString());
-            httpPost.setEntity(entity);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-            CloseableHttpResponse response = client.execute(httpPost);
-            System.out.println(response.getStatusLine());
+            for (int i = 0; i<movieList.size(); i++){
+                firstElement = movieList.get(i);
+                json.put("movieList", firstElement);
+
+                entity = new StringEntity(json.toString());
+                httpPost.setEntity(entity);
+                httpPost.setHeader("Accept", "application/json");
+                httpPost.setHeader("Content-type", "application/json");
+                CloseableHttpResponse response = client.execute(httpPost);
+            }
+//            entity = new StringEntity(json.toString());
+//            httpPost.setEntity(entity);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            CloseableHttpResponse response = client.execute(httpPost);
+            //System.out.println(response.getStatusLine());
             client.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
