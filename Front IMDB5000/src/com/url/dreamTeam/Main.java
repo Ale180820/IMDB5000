@@ -264,15 +264,17 @@ public class Main {
         System.out.println("║             5. Palabras clave                           ║");
         System.out.println("║             6. Lenguaje                                 ║");
         System.out.println("║             7. IMDB                                     ║");
+        System.out.println("║             8. Año                                      ║");
         System.out.println("║                                                         ║");
         System.out.println("║           Ingresa tu búsqueda y categorìa               ║");
         System.out.println("║                                                         ║");
         System.out.println("╚═════════════════════════════════════════════════════════╝");
-        System.out.print("Ingresa la palabra a buscar:  ");
         Scanner searchWord = new Scanner(System.in);
-        String word = searchWord.nextLine();
-        System.out.print("Ingresa la categorìa de la película:  ");
+        System.out.print("Ingresa la categorìa de la película [1-7]:  ");
         int category = Integer.parseInt(searchWord.nextLine());
+        System.out.print("Ingresa la palabra a buscar:  ");
+        String word = searchWord.nextLine();
+
         clearConsole();
 
         // Buscar pelicula
@@ -351,6 +353,9 @@ public class Main {
                 break;
             case 7:
                 categorySend = "imdb_score";
+                break;
+            case 8:
+                categorySend = "year";
                 break;
             default:
                 break;
