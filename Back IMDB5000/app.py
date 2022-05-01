@@ -116,12 +116,20 @@ def search_movies():
                             print(query, elem)
                             movieResult.append(movie)
                             break
+            for movie in movieResult:
+                movie["plot_keywords"] = movie.get("plot_keywords").join("|")
+                movie["genres"] = movie.get("genres").join("|")
+                movie["actors"] = movie.get("actors").join("|")
             return jsonify(movieResult), 200
         else:
             query = query.lower()
             movies = [movie for movie in movies if query in movie.get(
                 category).lower()]
             reverse = False
+        for movie in movies:
+            movie["plot_keywords"] = movie.get("plot_keywords").join("|")
+            movie["genres"] = movie.get("genres").join("|")
+            movie["actors"] = movie.get("actors").join("|")
         movies.sort(key=lambda x: x.get(category), reverse=reverse)
         return jsonify(movies), 200
     return {"error": "No movies found"}, 418
