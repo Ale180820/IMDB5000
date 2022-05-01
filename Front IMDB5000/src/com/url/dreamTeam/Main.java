@@ -28,12 +28,15 @@ public class Main {
     public static void initProgram() throws FileNotFoundException {
         try {
             //String s = readCSV("C:\\Users\\marce\\Downloads\\prueba.csv");
+            user = "";
             int loginRes = printLogin();
             switch (loginRes) {
                 case 1:
                     // crear usuario
                     System.out.println("CREAR USUARIO");
                     printCreateProfile();
+                    selectFavCategories();
+                    menuPrincipal();
                     break;
                 case 2:
                     // caso login valido
@@ -506,7 +509,6 @@ public class Main {
         // json
         json.put("username", username);
         json.put("password", password);
-        System.out.print(json);
 
         StringEntity entity = null;
 
@@ -647,7 +649,7 @@ public class Main {
 
         try {
             for (var category : categories) {
-                System.out.println(category);
+
                 if (Integer.valueOf(category) > maxValue || Integer.valueOf(category) < 1) {
                     // chequear que no hayan numeros que no existan en las categorias
                     System.out.println("Ingresa categorias validas");
@@ -669,7 +671,6 @@ public class Main {
         JSONObject json = new JSONObject();
         json.put("favCategories", categories);
         json.put("username", user);
-        System.out.print(json);
         StringEntity entity = null;
         try {
             entity = new StringEntity(json.toString());
