@@ -1,5 +1,6 @@
 package com.url.dreamTeam;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.http.HttpResponse;
@@ -717,21 +718,32 @@ public class Main {
                 .parse();
 
         for (var movie: movies) {
+            movie.TrimAll();
             movie.getActorsList();
         }
 
+<<<<<<< Updated upstream
+=======
+        StringEntity entity;
+
+>>>>>>> Stashed changes
         var movieList = new ArrayList<String>();
         movies.forEach(m -> movieList.add(new Gson().toJson(m)));
+        String firstElement;
 
         JSONObject json = new JSONObject();
-        var firstElement = movieList.get(0);
-
         try {
             for (int i = 0; i<movieList.size(); i++){
+<<<<<<< Updated upstream
                 CloseableHttpClient client = HttpClients.createDefault();
                 HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
                 StringEntity entity;
 
+=======
+                System.out.println(i);
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies");
+>>>>>>> Stashed changes
                 firstElement = movieList.get(i);
                 json.put("movieList", firstElement);
 
@@ -742,6 +754,16 @@ public class Main {
                 CloseableHttpResponse response = client.execute(httpPost);
                 client.close();
             }
+<<<<<<< Updated upstream
+=======
+//            json.put("movieList", firstElement);
+//            entity = new StringEntity(json.toString());
+//            httpPost.setEntity(entity);
+//            httpPost.setHeader("Accept", "application/json");
+//            httpPost.setHeader("Content-type", "application/json");
+//            CloseableHttpResponse response = client.execute(httpPost);
+//            System.out.println(response.getStatusLine());
+>>>>>>> Stashed changes
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {

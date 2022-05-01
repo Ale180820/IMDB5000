@@ -79,8 +79,8 @@ def add_movies():
         print(movies)
         #firebase.put('/', 'Movies', movies)
         #firebase.post('/', 'Movies', movies)
-        firebase.post('/Movies', movies)
-        return movies, 201
+        #firebase.post('/Movies', movies)
+        return jsonify(movies), 201
     return {"error": "Request must be JSON"}, 415
 
 
