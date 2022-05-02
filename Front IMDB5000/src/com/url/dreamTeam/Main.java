@@ -50,11 +50,19 @@ public class Main {
                     break;
                 case 3:
                     // caso login invalido
-                    System.out.println("LOGIN INCORRECTO");
+                    System.out.println("INCORRECTO LOGIN");
+                    System.out.println("    __.-._");
+                    System.out.println("    '-._\"7'");
+                    System.out.println("     /'.-c");
+                    System.out.println("     |  /T");
+                    System.out.println("    _)_/LI");
+                    initProgram();
                     break;
                 case 4:
                     // caso de error
                     System.out.println("XXXXX----- ERROR -----XXXXX");
+
+                    initProgram();
                     break;
             }
             new Scanner(System.in).nextLine();
@@ -105,13 +113,13 @@ public class Main {
                         initProgram();
                         break;
                     default:
-                        System.out.print("Opción incorrecta, intentelo nuevamente.");
+                        System.out.println("Opción incorrecta, intentelo nuevamente.");
                         new Scanner(System.in).nextLine();
                         clearConsole();
                         break;
                 }
             } catch (NumberFormatException | FileNotFoundException e) {
-                System.out.print("Opción incorrecta, intentelo nuevamente.");
+                System.out.println("Opción incorrecta, intentelo nuevamente.");
                 new Scanner(System.in).nextLine();
             }
         }
@@ -295,99 +303,115 @@ public class Main {
         System.out.println("║                                                         ║");
         System.out.println("╚═════════════════════════════════════════════════════════╝");
         Scanner searchWord = new Scanner(System.in);
-        System.out.print("Ingresa la categorìa de la película [1-7]:  ");
-        int category = Integer.parseInt(searchWord.nextLine());
-        System.out.print("Ingresa el valor a buscar:  ");
-        String word = searchWord.nextLine();
-
-        clearConsole();
-
-        // Buscar pelicula
-        List<Movie> movieList = MovieSearch(category, word);
-        if (movieList.size() == 0){
-            System.out.println("Ninguna película coincidió con la búsqueda");
-            new Scanner(System.in).nextLine();
-            try {
+        try
+        {
+            System.out.print("Ingresa la categorìa de la película [1-7]:  ");
+            int category = Integer.parseInt(searchWord.nextLine());
+            if (category < 1 || category > 8){
+                System.out.println("Opción inválida.");
                 menuPrincipal();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             }
-        }
-        var longestMovie = Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getMovie_title().length()));
-        var sizeOfString = (longestMovie.getMovie_title()).length();
-        switch (category) {
-            case 2:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getDirector_name().length()))
-                        .getDirector_name().length();
-                break;
-            case 3:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getStringActors().length()))
-                        .getStringActors().length();
-                break;
-            case 4:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getGenres().length()))
-                        .getGenres().length();
-                break;
-            case 5:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getPlot_keywords().length()))
-                        .getPlot_keywords().length();
-                break;
-            case 6:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getLanguage().length()))
-                        .getLanguage().length();
-                break;
-            case 7:
-                sizeOfString += 5;
-                break;
-            case 8:
-                sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getTitle_year().length()))
-                        .getTitle_year().length();
-                break;
-            default:
-                break;
-        }
+            System.out.print("Ingresa el valor a buscar:  ");
+            String word = searchWord.nextLine();
 
-        sizeOfString += String.valueOf(movieList.size()).length() + 8;
+            clearConsole();
 
-        System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
-        System.out.println("║"+ formatStringSize("══════ Buscar películas ══════", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize("Resultado de la búsqueda", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize("~", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
-        for (int i = 0; i < movieList.size(); i++) {
-            System.out.println("║" + formatStringSize((i + 1) + ". " + movieList.get(i).toFormattedString(category), sizeOfString) + "║");
-        }
-        System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize("~", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize(" Ingrese la película y su valoración ", sizeOfString)+"║");
-        System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
-        System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
-        System.out.print("Ingrese la película [1-" + movieList.size()+"]: ");
-        int moviesSelection = Integer.parseInt(searchWord.nextLine());
-        System.out.print("Ingrese tu valoración entre 1 y 10:  ");
-        int rating = Integer.parseInt(searchWord.nextLine());
-        clearConsole();
+            // Buscar pelicula
+            List<Movie> movieList = MovieSearch(category, word);
+            if (movieList.size() == 0){
+                System.out.println("Ninguna película coincidió con la búsqueda");
+                new Scanner(System.in).nextLine();
+                try {
+                    menuPrincipal();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            var longestMovie = Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getMovie_title().length()));
+            var sizeOfString = (longestMovie.getMovie_title()).length();
+            switch (category) {
+                case 2:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getDirector_name().length()))
+                            .getDirector_name().length();
+                    break;
+                case 3:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getStringActors().length()))
+                            .getStringActors().length();
+                    break;
+                case 4:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getGenres().length()))
+                            .getGenres().length();
+                    break;
+                case 5:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getPlot_keywords().length()))
+                            .getPlot_keywords().length();
+                    break;
+                case 6:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getLanguage().length()))
+                            .getLanguage().length();
+                    break;
+                case 7:
+                    sizeOfString += 5;
+                    break;
+                case 8:
+                    sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getTitle_year().length()))
+                            .getTitle_year().length();
+                    break;
+                default:
+                    break;
+            }
 
-        // Valorar pelicula
-        if(sendRating(movieList.get(moviesSelection-1).getMovie_title(), rating)){
-            System.out.println("╔═════════════════════════════════════════════════════════╗");
-            System.out.println("║═════════════════════Buscar películas════════════════════║");
-            System.out.println("║                                                         ║");
-            System.out.println("║                ¡Tu valoración se ha guardado            ║");
-            System.out.println("║                        exitosamente!                    ║");
-            System.out.println("║                                                         ║");
-            System.out.println("╚═════════════════════════════════════════════════════════╝");
-        }else{
-            System.out.println("╔═════════════════════════════════════════════════════════╗");
-            System.out.println("║═════════════════════Buscar películas════════════════════║");
-            System.out.println("║                                                         ║");
-            System.out.println("║             Tu valoración no se ha guardado.            ║");
-            System.out.println("║                    Intentalo nuevamente.                ║");
-            System.out.println("║                                                         ║");
-            System.out.println("╚═════════════════════════════════════════════════════════╝");
+            sizeOfString += String.valueOf(movieList.size()).length() + 8;
+
+            System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
+            System.out.println("║"+ formatStringSize("══════ Buscar películas ══════", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("Resultado de la búsqueda", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("~", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
+            for (int i = 0; i < movieList.size(); i++) {
+                System.out.println("║" + formatStringSize((i + 1) + ". " + movieList.get(i).toFormattedString(category), sizeOfString) + "║");
+            }
+            System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize("~", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize(" Ingrese la película y su valoración ", sizeOfString)+"║");
+            System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
+            System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
+            System.out.print("Ingrese la película [1-" + movieList.size()+"]: ");
+            int moviesSelection = Integer.parseInt(searchWord.nextLine());
+            System.out.print("Ingrese tu valoración entre 1 y 10:  ");
+
+            double rating = Double.parseDouble(searchWord.nextLine());
+            clearConsole();
+            if (rating < 1 || rating > 10){
+                System.out.println("Error: La calificación se encuentra fuera del rango.");
+                menuPrincipal();
+            }
+            // Valorar pelicula
+            if(sendRating(movieList.get(moviesSelection-1).getMovie_title(), rating)){
+                System.out.println("╔═════════════════════════════════════════════════════════╗");
+                System.out.println("║═════════════════════Buscar películas════════════════════║");
+                System.out.println("║                                                         ║");
+                System.out.println("║                ¡Tu valoración se ha guardado            ║");
+                System.out.println("║                        exitosamente!                    ║");
+                System.out.println("║                                                         ║");
+                System.out.println("╚═════════════════════════════════════════════════════════╝");
+            }else{
+                System.out.println("╔═════════════════════════════════════════════════════════╗");
+                System.out.println("║═════════════════════Buscar películas════════════════════║");
+                System.out.println("║                                                         ║");
+                System.out.println("║             Tu valoración no se ha guardado.            ║");
+                System.out.println("║                    Intentalo nuevamente.                ║");
+                System.out.println("║                                                         ║");
+                System.out.println("╚═════════════════════════════════════════════════════════╝");
+            }
+            searchWord.nextLine();
+        } catch (NumberFormatException e) {
+            System.out.print("Error: El valor ingresado no coincide con las opciones. Intentelo nuevamente.");
+            new Scanner(System.in).nextLine();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        searchWord.nextLine();
     }
 
     // 3. Recomendaciones
@@ -503,7 +527,7 @@ public class Main {
     }
 
     // POST - Rating
-    public static boolean sendRating(String title, int rating) {
+    public static boolean sendRating(String title, double rating) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://127.0.0.1:5000/movies/grading");
         JSONObject json = new JSONObject();
