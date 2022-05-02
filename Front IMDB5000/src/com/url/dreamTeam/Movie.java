@@ -52,7 +52,43 @@ public class Movie {
         title_year = title_year == null ? null : new String(title_year.getBytes(), StandardCharsets.US_ASCII);
     }
 
+    public String getColor() {
+        return color;
+    }
+    public String getDirector_name() {
+        return director_name;
+    }
+    public String getActor_1_name() {
+        return actor_1_name;
+    }
+    public String getActor_2_name() {
+        return actor_2_name;
+    }
+    public String getActor_3_name() {
+        return actor_3_name;
+    }
     public String getMovie_title() { return movie_title; }
+    public String getGenres() {
+        return genres;
+    }
+    public String getPlot_keywords() {
+        return plot_keywords;
+    }
+    public String getLanguage() {
+        return language;
+    }
+    public Double getImdb_score() {
+        return imdb_score;
+    }
+    public String getTitle_year() {
+        return title_year;
+    }
+    public List<String> getActors() {
+        return actors;
+    }
+
+
+
     public String getStringActors(){
         return StringUtils.join(actors, "|");
     }
@@ -73,7 +109,7 @@ public class Movie {
             case 8:
                 return movie_title + " - " + title_year;
             default:
-                return movie_title;
+                return movie_title ;
         }
 
     }

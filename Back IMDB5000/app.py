@@ -106,7 +106,8 @@ def search_movies():
         if category == 'imdb_score':
             query = float(query)
             movies = [movie for movie in movies if float(movie.get(
-                category)) >= query]
+                category)) + 1 >= query and float(movie.get(
+                category)) - 1 <= query]
         elif category in ["plot_keywords", "genres", "actors"]:
             for movie in movies:
                 categoryResult = movie.get(category)
@@ -171,8 +172,13 @@ def grading_movie():
         username, movie, grade = req["username"], req["movie"], req["grade"]
         users = firebase.get('/Users', '')
         if check_if_user_exists(users, username):
-            movies = users[username]["movies"]
-            movies[movie] = grade
+            movies = users[username].get("movies")
+            if movies == None:
+                users[username]["movies"] = {
+                    movie: grade
+                }
+            else:
+                users[username]["movies"][movie] = grade
             firebase.put('/', 'Users', users)
-        return 201
+        return {"username": username, "movie": movie, "grade": grade}, 200
     return {"error": "Request must be JSON"}, 415
