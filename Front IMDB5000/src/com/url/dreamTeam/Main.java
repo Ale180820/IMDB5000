@@ -699,15 +699,15 @@ public class Main {
 
                     setFavCategories(selectedCategories);
                     // no debe de reintentar nuevamente
-
+                    reintentar = false;
                 }
 
             } else if (options.equals("")) {
                 System.out.println("Ingresa alguna de las categorias");
                 //debe reintentar
+                reintentar = true;
             }
-            //no debe de reinternar
-            reintentar = false;
+
         }
 
     }
