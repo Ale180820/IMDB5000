@@ -115,6 +115,8 @@ def recommend():
         if "movies" in user.keys():
             list_movies = user["movies"]
     result = recommender.recommend(df, list_genres, list_movies)
+    result.rename(columns={'year': 'title_year',
+                  'name': 'movie_title'}, inplace=True)
     return jsonify(result.to_dict('records')), 200
 
 

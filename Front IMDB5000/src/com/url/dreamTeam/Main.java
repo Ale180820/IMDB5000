@@ -79,9 +79,8 @@ public class Main {
             System.out.println("║                                                         ║");
             System.out.println("║                   1. Calificar peliculas                ║");
             System.out.println("║                 2. Obtener recomendaciones              ║");
-            System.out.println("║                      3. Borrar datos                    ║");
-            System.out.println("║                4. Cargar csv con películas              ║");
-            System.out.println("║                      5. Cerrar Sesión                   ║");
+            System.out.println("║                3. Cargar csv con películas              ║");
+            System.out.println("║                      4. Cerrar Sesión                   ║");
             System.out.println("║                                                         ║");
             System.out.println("╚═════════════════════════════════════════════════════════╝");
             System.out.print("Seleccione una opción:  ");
@@ -98,9 +97,6 @@ public class Main {
                         topMovies();
                         break;
                     case 3:
-                        deleteData();
-                        break;
-                    case 4:
                         System.out.print("Ingrese la dirección del archivo:  ");
                         var fileAddress = in.nextLine();
                         fileAddress = fileAddress.replaceAll("\"", "");
@@ -108,7 +104,7 @@ public class Main {
                             System.out.println("Archivo cargado correctamente");
                         }
                         break;
-                    case 5:
+                    case 4:
                         initProgram();
                         break;
                     default:
@@ -374,9 +370,9 @@ public class Main {
             System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
             System.out.print("Ingrese la película [1-" + movieList.size()+"]: ");
             int moviesSelection = Integer.parseInt(searchWord.nextLine());
-            System.out.print("Ingrese tu valoración entre 1 y 10:  ");
+            System.out.print("Ingrese tu valoración entre 1 y 10 (enteros):  ");
 
-            double rating = Double.parseDouble(searchWord.nextLine());
+            int rating = Integer.parseInt(searchWord.nextLine());
             clearConsole();
             if (rating < 1 || rating > 10){
                 System.out.println("Error: La calificación se encuentra fuera del rango.");
@@ -423,12 +419,12 @@ public class Main {
         }
         var longestMovie = Collections.max(topTen, Comparator.comparingInt((Movie o) -> o.getMovie_title().length()));
         var sizeOfString = (longestMovie.getMovie_title()).length();
-        sizeOfString += String.valueOf(topTen.size()).length() + 13;
+        sizeOfString += String.valueOf(topTen.size()).length() + 19;
         System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
         System.out.println("║"+ formatStringSize("══════ Top 10 de películas ══════", sizeOfString)+"║");
         System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
         for (int i = 0; i < topTen.size(); i++) {
-            System.out.println("║" + formatStringSize((i + 1) + ". " + topTen.get(i).toFormattedString(7), sizeOfString) + "║");
+            System.out.println("║" + formatStringSize((i + 1) + ". " + topTen.get(i).toFormattedString(9), sizeOfString) + "║");
         }
         System.out.println("║"+ formatStringSize(" ", sizeOfString)+"║");
         System.out.println("╚"+ formatStringHorizontal(sizeOfString)+"╝");
@@ -436,12 +432,6 @@ public class Main {
         Scanner option = new Scanner(System.in);
         option.nextLine();
     }
-
-    // 4. Borrar datos
-    public static void deleteData() {
-
-    }
-
     // GET y POST
 
     // POST - Search
@@ -551,7 +541,7 @@ public class Main {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try {
-            HttpGet httpget = new HttpGet(new URIBuilder("http://127.0.0.1:5000/movies")
+            HttpGet httpget = new HttpGet(new URIBuilder("http://127.0.0.1:5000/recommend")
                     .addParameter("username", user)
                     .build());
             HttpResponse httpresponse = httpclient.execute(httpget);

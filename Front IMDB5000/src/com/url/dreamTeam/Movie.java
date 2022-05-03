@@ -29,6 +29,8 @@ public class Movie {
     private Double imdb_score;
     @CsvBindByName
     private String title_year;
+
+    private double score;
     private List<String> actors;
 
     public void getActorsList(){
@@ -108,6 +110,8 @@ public class Movie {
                 return movie_title + " - " + imdb_score;
             case 8:
                 return movie_title + " - " + title_year;
+            case 9:
+                return movie_title + " - " + title_year + " - " + String.format("%.2f", score * 100.0) + "%";
             default:
                 return movie_title ;
         }
