@@ -93,6 +93,9 @@ def add_movies():
 
 @app.get("/recommend")
 def recommend():
+    username = request.args.get("username")
+    movies = firebase.get('/Movies', '')
+    user = firebase.get(f'/Users/{username}', '')
     return jsonify(recommender.recommend([], []))
 
 
@@ -107,7 +110,7 @@ def search_movies():
             query = float(query)
             movies = [movie for movie in movies if float(movie.get(
                 category)) + 1 >= query and float(movie.get(
-                category)) - 1 <= query]
+                    category)) - 1 <= query]
         elif category in ["plot_keywords", "genres", "actors"]:
             for movie in movies:
                 categoryResult = movie.get(category)
