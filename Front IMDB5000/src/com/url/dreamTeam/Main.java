@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -23,7 +22,7 @@ public class Main {
 
 
     public static String user;
-    public static void main(String[] args) throws FileNotFoundException { initProgram(); }
+    public static void main(String[] args) { initProgram(); }
 
     public static void initProgram() {
         try {
@@ -164,19 +163,17 @@ public class Main {
             System.out.print("  Ingrese su password : ");
             Scanner inPassword = new Scanner(System.in);
             String password = inPassword.nextLine();
-            String cPassword = "";
+            String cPassword;
 
             if (password.length() > 12) {
                 clearConsole();
                 System.out.println("Password debe tener menos de 12 caracteres");
                 result = 4;
             } else {
-                for (int i = 0; i < password.length(); i++) {
-                    cPassword += "*";
-                }
+                cPassword = "*".repeat(password.length());
 
                 int sizeOfPassString = ("║          PASSWORD:    " + cPassword + "                      ║").length();
-                sizeOfString =  sizeOfPassString > sizeOfString ? sizeOfPassString : sizeOfString;
+                sizeOfString = Math.max(sizeOfPassString, sizeOfString);
 
                 System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
                 System.out.println("║"+ formatStringSize("══════ INICIAR SESIÓN ══════", sizeOfString)+"║");
@@ -207,7 +204,7 @@ public class Main {
         System.out.print("  Ingrese su username: ");
         Scanner inUsername = new Scanner(System.in);
         String username = inUsername.nextLine().toLowerCase();
-        String sUsername = "";
+        String sUsername;
 
         if (username.length() > 12) {
             clearConsole();
@@ -226,20 +223,18 @@ public class Main {
             System.out.print("  Ingrese su password : ");
             Scanner inPassword = new Scanner(System.in);
             String password = inPassword.nextLine();
-            String cPassword = "";
+            String cPassword;
 
             if (password.length() > 12) {
                 clearConsole();
                 System.out.println("Password debe tener menos de 12 caracteres");
             } else {
-                for (int i = 0; i < password.length(); i++) {
-                    cPassword += "*";
-                }
+                cPassword = "*".repeat(password.length());
 
                 cPassword = String.format("%-12s", cPassword);
 
                 int sizeOfPassString = ("║          PASSWORD:    " + cPassword + "                      ║").length();
-                sizeOfString =  sizeOfPassString > sizeOfString ? sizeOfPassString : sizeOfString;
+                sizeOfString = Math.max(sizeOfPassString, sizeOfString);
 
                 System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
                 System.out.println("║"+ formatStringSize("═════════════════ CREACIÓN DE USUARIOS ══════════════════", sizeOfString)+"║");
@@ -257,28 +252,28 @@ public class Main {
         return result;
     }
 
-    // 2. Rating de películas
-    public static void movieRating() throws IOException {
-        int option = 0;
-        while (option != 2) {
-            System.out.println("╔═════════════════════════════════════════════════════════╗");
-            System.out.println("║═════════════════Valoración de Películas═════════════════║");
-            System.out.println("║                                                         ║");
-            System.out.println("║                   1. Buscar película                    ║");
-            System.out.println("║                       2. Volver                         ║");
-            System.out.println("║                                                         ║");
-            System.out.println("╚═════════════════════════════════════════════════════════╝");
-            System.out.print("Seleccione una opción:  ");
-            Scanner in = new Scanner(System.in);
-            option = Integer.parseInt(in.nextLine());
-            if (option == 1) {
-                search();
-            } else {
-                System.out.print("Opción incorrecta, intentelo nuevamente.");
-                System.in.read();
-            }
-        }
-    }
+//    // 2. Rating de películas
+//    public static void movieRating() throws IOException {
+//        int option = 0;
+//        while (option != 2) {
+//            System.out.println("╔═════════════════════════════════════════════════════════╗");
+//            System.out.println("║═════════════════Valoración de Películas═════════════════║");
+//            System.out.println("║                                                         ║");
+//            System.out.println("║                   1. Buscar película                    ║");
+//            System.out.println("║                       2. Volver                         ║");
+//            System.out.println("║                                                         ║");
+//            System.out.println("╚═════════════════════════════════════════════════════════╝");
+//            System.out.print("Seleccione una opción:  ");
+//            Scanner in = new Scanner(System.in);
+//            option = Integer.parseInt(in.nextLine());
+//            if (option == 1) {
+//                search();
+//            } else {
+//                System.out.print("Opción incorrecta, intentelo nuevamente.");
+//                System.in.read();
+//            }
+//        }
+//    }
 
     public static void search() {
         // Inicio de busqueda
@@ -505,7 +500,7 @@ public class Main {
             if (entity.getContent() != null) {
                 InputStream inputStream = entity.getContent();
                 var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                for (String line = null; (line = bufferedReader.readLine()) != null;) {
+                for (String line; (line = bufferedReader.readLine()) != null;) {
                     builder.append(line).append("\n");
                 }
                 // Exception getting thrown in below line
@@ -518,9 +513,7 @@ public class Main {
                 return topTen;
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return topTen;
@@ -536,7 +529,7 @@ public class Main {
         json.put("movie", title);
         json.put("grade", rating);
         json.put("username", user);
-        StringEntity entity = null;
+        StringEntity entity;
         try {
             entity = new StringEntity(json.toString());
             httpPost.setEntity(entity);
@@ -559,7 +552,7 @@ public class Main {
 
         try {
             HttpGet httpget = new HttpGet(new URIBuilder("http://127.0.0.1:5000/movies")
-                    .addParameter("user", user)
+                    .addParameter("username", user)
                     .build());
             HttpResponse httpresponse = httpclient.execute(httpget);
             var entity = httpresponse.getEntity();
@@ -569,7 +562,7 @@ public class Main {
             if (entity != null) {
                 InputStream inputStream = entity.getContent();
                 var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                for (String line = null; (line = bufferedReader.readLine()) != null;) {
+                for (String line; (line = bufferedReader.readLine()) != null;) {
                     builder.append(line).append("\n");
                 }
                 // Exception getting thrown in below line
@@ -582,9 +575,7 @@ public class Main {
                 return topTen;
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return topTen;
@@ -601,7 +592,7 @@ public class Main {
         json.put("username", username);
         json.put("password", password);
 
-        StringEntity entity = null;
+        StringEntity entity;
 
         if (create) {
             // caso create account
@@ -654,7 +645,7 @@ public class Main {
             if (entity != null) {
                 InputStream inputStream = entity.getContent();
                 var bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                for (String line = null; (line = bufferedReader.readLine()) != null;) {
+                for (String line; (line = bufferedReader.readLine()) != null;) {
                     builder.append(line).append("\n");
                 }
                 // Exception getting thrown in below line
@@ -707,16 +698,16 @@ public class Main {
             if (!options.contains("x")) {
                 String[] selectedCategoriesIndex = options.split(",");
                 // Eliminar numeros duplicados
-                LinkedHashSet linkedHashSet = new LinkedHashSet<>(List.of(selectedCategoriesIndex));
+                LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(List.of(selectedCategoriesIndex));
                 // Get back the array without duplicates
-                selectedCategoriesIndex = (String[]) linkedHashSet.toArray(new String[] {});
+                selectedCategoriesIndex = linkedHashSet.toArray(new String[] {});
                 isValid = isValidCategories(selectedCategoriesIndex, categories.size());
 
                 if (isValid) {
                     List<String> selectedCategories = new ArrayList<>();
                     for (String categoryIndex : selectedCategoriesIndex) {
 
-                        var cat = categories.get(Integer.valueOf(categoryIndex) - 1);
+                        var cat = categories.get(Integer.parseInt(categoryIndex) - 1);
                         System.out.println(cat);
                         selectedCategories.add(cat);
                     }
@@ -726,14 +717,8 @@ public class Main {
                     reintentar = false;
                 }
 
-            } else if (options.equals("")) {
-                System.out.println("Ingresa alguna de las categorias");
-                //debe reintentar
-                reintentar = true;
             }
-
         }
-
     }
 
     public static boolean isValidCategories(String[] categories, int maxValue) {
@@ -741,7 +726,7 @@ public class Main {
         try {
             for (var category : categories) {
 
-                if (Integer.valueOf(category) > maxValue || Integer.valueOf(category) < 1) {
+                if (Integer.parseInt(category) > maxValue || Integer.parseInt(category) < 1) {
                     // chequear que no hayan numeros que no existan en las categorias
                     System.out.println("Ingresa categorias validas");
                     return false;
@@ -762,13 +747,13 @@ public class Main {
         JSONObject json = new JSONObject();
         json.put("favCategories", categories);
         json.put("username", user);
-        StringEntity entity = null;
+        StringEntity entity;
         try {
             entity = new StringEntity(json.toString());
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-            CloseableHttpResponse response = client.execute(httpPost);
+            client.execute(httpPost);
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -776,7 +761,7 @@ public class Main {
 
     }
 
-    public final static void clearConsole() {
+    public static void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
 
@@ -792,7 +777,7 @@ public class Main {
 
     public static Boolean sendCSVMovies(String path) throws FileNotFoundException {
 
-        List<Movie> movies = new CsvToBeanBuilder(new FileReader(path))
+        List<Movie> movies = new CsvToBeanBuilder<Movie>(new FileReader(path))
                 .withType(Movie.class)
                 .withIgnoreLeadingWhiteSpace(true)
                 .withIgnoreEmptyLine(true)
