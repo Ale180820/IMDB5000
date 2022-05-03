@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 from random import random
 
-def recommend(genres, movies):
-    df = pd.read_csv("movie_metadata.csv")
+def recommend(df, genres, movies):
     df = df.fillna(value="")
     df = df.loc[:, ["movie_title", "title_year", "genres", "director_name", "actor_1_name", "actor_2_name", "actor_3_name", "plot_keywords", "language", "imdb_score"]]
     if not genres and not movies:
@@ -67,15 +66,21 @@ def full_recommend(df, initial_genres, movies):
             'score': np.array([0.0] * 10, dtype="float64")
         }
     )
+    
     #La primera posición es para ham, y la segunda para spam
-    genres = [initial_genres * 2, []] #Se multiplica para aumentar el peso de los géneros iniciales
-    keywords = [[], []]
-    actors = [[], []]
-    directors = [[], []]
-    languages = [[], []]
+    f_genres = [{}, {}]
+    f_keywords = [{}, {}]
+    f_actors = [{}, {}]
+    f_directors = [{}, {}]
+    f_languages = [{}, {}]
 
+    for val in initial_genres:
+        f_genres[0][val] = 3 # es 3 para aumentar el peso de los géneros iniciales
+        f_genres[1][val] = 1
+    
     #Matriz para obtener el peso dado el punteo de la película
     weight = [1, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5]
+    
     # Recopilación de datos de películas
     i = 0
     while (i < len(df.index)):
@@ -87,24 +92,95 @@ def full_recommend(df, initial_genres, movies):
         -  3% director
         -  2% calificación IMDB
         '''
-        if df.iloc[i, 0] in movies.keys():
+        title = df.iloc[i, 0]
+        
+        if title in movies.keys():
             x = 0
-            if movies[df.iloc[i, 0]] < 6:
+            y = 1
+            if movies[title] < 6:
                 x = 1
-            genres[x] = genres[x] + df.iloc[i, 2].split('|') * weight[movies[df.iloc[i, 0]]] #géneros
-            keywords[x] = keywords[x] + df.iloc[i, 7].split('|')  * weight[movies[df.iloc[i, 0]]] #palabras clave
-            actors[x] = actors[x] + [df.iloc[i, 4]] * weight[movies[df.iloc[i, 0]]] + [df.iloc[i, 5]] * weight[movies[df.iloc[i, 0]]] + [df.iloc[i, 6]] * weight[movies[df.iloc[i, 0]]] #actores
-            directors[x] = directors[x] + [df.iloc[i, 3]] * weight[movies[df.iloc[i, 0]]] #director
-            languages[x] = languages[x] + [df.iloc[i, 8]] * weight[movies[df.iloc[i, 0]]] #idioma
+                y = 0
+            #frecuencias_géneros
+            split = df.iloc[i, 2].split('|')
+            for token in split:
+                if token not in f_genres[x].keys():
+                    f_genres[x][token] = 1 + weight[movies[title]]
+                    f_genres[y][token] = 1
+                else:
+                    f_genres[x][token] += weight[movies[title]]
+            
+            #frecuencias_palabras clave
+            split = df.iloc[i, 7].split('|')
+            for token in split:
+                if token not in f_keywords[x].keys():
+                    f_keywords[x][token] = 1 + weight[movies[title]]
+                    f_keywords[y][token] = 1
+                else:
+                    f_keywords[x][token] += weight[movies[title]]
+
+            #frecuencias_actores
+            split = df.iloc[i, 4].split('|') + df.iloc[i, 5].split('|') + df.iloc[i, 6].split('|')
+            for token in split:
+                if token not in f_actors[x].keys():
+                    f_actors[x][token] = 1 + weight[movies[title]]
+                    f_actors[y][token] = 1
+                else:
+                    f_actors[x][token] += weight[movies[title]]
+            
+            #frecuencias_directores
+            split = df.iloc[i, 3].split('|')
+            for token in split:
+                if token not in f_directors[x].keys():
+                    f_directors[x][token] = 1 + weight[movies[title]]
+                    f_directors[y][token] = 1
+                else:
+                    f_directors[x][token] += weight[movies[title]]
+            
+            #frecuencias_idiomas
+            split = df.iloc[i, 8].split('|')
+            for token in split:
+                if token not in f_languages[x].keys():
+                    f_languages[x][token] = 1 + weight[movies[title]]
+                    f_languages[y][token] = 1
+                else:
+                    f_languages[x][token] += weight[movies[title]]
+            
+        else:
+            #frecuencias_géneros
+            split = df.iloc[i, 2].split('|')
+            for token in split:
+                if token not in f_genres[0].keys():
+                    f_genres[0][token] = 1
+                    f_genres[1][token] = 1
+            
+            #frecuencias_palabras clave
+            split = df.iloc[i, 7].split('|')
+            for token in split:
+                if token not in f_keywords[0].keys():
+                    f_keywords[0][token] = 1
+                    f_keywords[1][token] = 1
+
+            #frecuencias_actores
+            split = df.iloc[i, 4].split('|') + df.iloc[i, 5].split('|') + df.iloc[i, 6].split('|')
+            for token in split:
+                if token not in f_actors[0].keys():
+                    f_actors[0][token] = 1
+                    f_actors[1][token] = 1
+            
+            #frecuencias_directores
+            split = df.iloc[i, 3].split('|')
+            for token in split:
+                if token not in f_directors[0].keys():
+                    f_directors[0][token] = 1
+                    f_directors[1][token] = 1
+            
+            #frecuencias_idiomas
+            split = df.iloc[i, 8].split('|')
+            for token in split:
+                if token not in f_languages[0].keys():
+                    f_languages[0][token] = 1
+                    f_languages[1][token] = 1
         i += 1
-    
-    #Creación de tablas de frecuencias
-    #La primera posición es para ham, y la segunda para spam
-    f_genres = [crear_tabla_frecuencias(genres[0]), crear_tabla_frecuencias(genres[1])]
-    f_keywords = [crear_tabla_frecuencias(keywords[0]), crear_tabla_frecuencias(keywords[1])]
-    f_actors = [crear_tabla_frecuencias(actors[0]), crear_tabla_frecuencias(actors[1])]
-    f_directors = [crear_tabla_frecuencias(directors[0]), crear_tabla_frecuencias(directors[1])]
-    f_languages = [crear_tabla_frecuencias(languages[0]), crear_tabla_frecuencias(languages[1])]
     
     #Cálculo de totales
     t_genres = [cant_palabras(f_genres[0]), cant_palabras(f_genres[1])]
@@ -167,15 +243,6 @@ def genre_score(list_genres, genres):
             score -= 1
     return (score + len(genres)) / (2 * len(genres))
 
-def crear_tabla_frecuencias(tokens):
-    frecuencias = {}
-    for token in tokens:
-        if token not in frecuencias.keys():
-            frecuencias[token] = 1
-        else:
-            frecuencias[token] += 1
-    return frecuencias
-
 def cant_palabras(tabla):
     cant = 0
     for f in tabla:
@@ -189,20 +256,14 @@ def f_a_probabilidad(frecuencias, total):
         cpt_equivalente[k] = probabilidad
     return cpt_equivalente
 
-def suav(token, cpt):
-    if token in cpt.keys():
-        return cpt[token]
-    else:
-        return  0
-
 def score_bow(listado, cpt, p):
     tokens = listado.split("|")
     p_l_ham = 1
     for token in tokens:
-        p_l_ham *= suav(token, cpt[0])
+        p_l_ham *= cpt[0][token]
     p_l_spam = 1
     for token in tokens:
-        p_l_spam *= suav(token, cpt[1])
+        p_l_spam *= cpt[1][token]
     val = (p_l_ham * p[0]) + (p_l_spam * p[1])
     if val == 0:
         return 0

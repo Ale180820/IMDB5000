@@ -8,6 +8,9 @@ import json
 from matplotlib.pyplot import title
 import imdb_recommender as recommender
 
+import numpy as np
+import pandas as pd
+
 app = Flask(__name__)
 firebase = firebase.FirebaseApplication(
     "https://proyecto-ia-ba83a-default-rtdb.firebaseio.com", None)
@@ -95,8 +98,24 @@ def add_movies():
 def recommend():
     username = request.args.get("username")
     movies = firebase.get('/Movies', '')
-    user = firebase.get(f'/Users/{username}', '')
-    return jsonify(recommender.recommend([], []))
+    for movie in movies:
+        movie["actor_1_name"] = movie["actors"][0]
+        movie["actor_2_name"] = movie["actors"][1]
+        movie["actor_3_name"] = movie["actors"][2]
+        movie["plot_keywords"] = "|".join(movie["plot_keywords"])
+        movie["genres"] = "|".join(movie["genres"])
+        movie["movie_title"]
+    df = pd.DataFrame(movies)
+    list_genres = []
+    list_movies = {}
+    if username != None:
+        user = firebase.get(f'/Users/{username}', '')
+        if "favCategories" in user.keys():
+            list_genres = user["favCategories"]
+        if "movies" in user.keys():
+            list_movies = user["movies"]
+    result = recommender.recommend(df, list_genres, list_movies)
+    return jsonify(result.to_dict('records')), 200
 
 
 @app.get("/movies")
