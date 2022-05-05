@@ -139,7 +139,8 @@ def search_movies():
                 categoryResult = movie.get(category)
                 if categoryResult != None:
                     for elem in categoryResult:
-                        if query == elem.lower():
+                        elem =elem.lower()
+                        if query == elem or query in elem:
                             movieResult.append(movie)
                             break
             for movie in movieResult:
