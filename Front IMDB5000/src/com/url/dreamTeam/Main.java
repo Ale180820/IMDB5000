@@ -296,12 +296,14 @@ public class Main {
         Scanner searchWord = new Scanner(System.in);
         try
         {
-            System.out.print("Ingresa la categorìa de la película [1-7]:  ");
+            System.out.print("Ingresa la categorìa de la película [1-8]:  ");
             int category = Integer.parseInt(searchWord.nextLine());
             if (category < 1 || category > 8){
                 System.out.println("Opción inválida.");
                 menuPrincipal();
             }
+            if(category==4)
+                showCategories(false);
             System.out.print("Ingresa el valor a buscar:  ");
             String word = searchWord.nextLine();
 
@@ -311,6 +313,7 @@ public class Main {
             List<Movie> movieList = MovieSearch(category, word);
             if (movieList.size() == 0){
                 System.out.println("Ninguna película coincidió con la búsqueda");
+                System.out.print("Presiona enter para volver al inicio.");
                 new Scanner(System.in).nextLine();
                 try {
                     menuPrincipal();
@@ -330,6 +333,7 @@ public class Main {
                             .getStringActors().length();
                     break;
                 case 4:
+
                     sizeOfString += Collections.max(movieList, Comparator.comparingInt((Movie o) -> o.getGenres().length()))
                             .getGenres().length();
                     break;
@@ -353,6 +357,7 @@ public class Main {
             }
 
             sizeOfString += String.valueOf(movieList.size()).length() + 8;
+            sizeOfString = Collections.max(List.of(sizeOfString, 40));
 
             System.out.println("╔"+ formatStringHorizontal(sizeOfString)+"╗");
             System.out.println("║"+ formatStringSize("══════ Buscar películas ══════", sizeOfString)+"║");
@@ -378,6 +383,10 @@ public class Main {
                 System.out.println("Error: La calificación se encuentra fuera del rango.");
                 menuPrincipal();
             }
+            if (moviesSelection - 1 < 0 || moviesSelection> movieList.size()) {
+                System.out.println("Error: La película se encuentra fuera del rango.");
+                menuPrincipal();
+            }
             // Valorar pelicula
             if(sendRating(movieList.get(moviesSelection-1).getMovie_title(), rating)){
                 System.out.println("╔═════════════════════════════════════════════════════════╗");
@@ -396,6 +405,7 @@ public class Main {
                 System.out.println("║                                                         ║");
                 System.out.println("╚═════════════════════════════════════════════════════════╝");
             }
+            System.out.print("Presiona enter para volver al inicio.");
             searchWord.nextLine();
         } catch (NumberFormatException e) {
             System.out.print("Error: El valor ingresado no coincide con las opciones. Intentelo nuevamente.");
@@ -652,21 +662,27 @@ public class Main {
         return categories;
     }
 
-    public static List<String> showCategories() {
+    public static List<String> showCategories(boolean conIndice) {
         List<String> categories = getCategories();
         System.out.println();
         System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                              Categorias                             ║");
+        System.out.println("║                                Géneros                              ║");
         System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
         System.out.println();
         var num = 1;
 
         for (var category : categories) {
-            System.out.print(num + "." + category + "   ");
+            if(conIndice){
+                System.out.print(formatStringSize(num + "." + category, 15));
+            }else{
+                System.out.print(formatStringSize("•" + category, 15));
+            }
+
             if(num%5==0)
                 System.out.println();
             num++;
         }
+        System.out.println();
         System.out.println();
 
         return categories;
@@ -676,9 +692,9 @@ public class Main {
         boolean isValid;
         boolean reintentar = true;
         while(reintentar){
-            List<String>categories = showCategories();
+            List<String>categories = showCategories(true);
             System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
-            System.out.println("║  Ingresa el índice de tus categorias favoritas separadas por comas  ║");
+            System.out.println("║    Ingresa el índice de tus generos favoritos separadas por comas   ║");
             System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
             System.out.println("Ingresa x para omitir");
             Scanner in = new Scanner(System.in);

@@ -127,18 +127,19 @@ def search_movies():
     movieResult = []
     reverse = True
     if movies != None and query != None and category != None:
+        category = category.lower()
         if category == 'imdb_score':
             query = float(query)
             movies = [movie for movie in movies if float(movie.get(
                 category)) + 1 >= query and float(movie.get(
                     category)) - 1 <= query]
         elif category in ["plot_keywords", "genres", "actors"]:
+            query = query.lower()
             for movie in movies:
                 categoryResult = movie.get(category)
                 if categoryResult != None:
                     for elem in categoryResult:
-                        if query in elem:
-                            print(query, elem)
+                        if query == elem.lower():
                             movieResult.append(movie)
                             break
             for movie in movieResult:
